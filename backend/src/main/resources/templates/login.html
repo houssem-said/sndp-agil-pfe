@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Connexion</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}"/>
+</head>
+<body>
+<div class="login-container">
+    <h1>Connexion SNDP AGIL</h1>
+    <form th:action="@{/api/auth/login}" method="post">
+        <div class="form-group">
+            <label for="username">Nom d'utilisateur</label>
+            <input type="text" id="username" name="username" required/>
+        </div>
+        <div class="form-group">
+            <label for="password">Mot de passe</label>
+            <input type="password" id="password" name="password" required/>
+        </div>
+        <button type="submit" class="btn-login">Se connecter</button>
+    </form>
+    <div th:if="${param.error}" class="error-message">
+        Identifiants invalides
+    </div>
+</div>
+</body>
+</html>
