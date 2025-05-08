@@ -26,7 +26,7 @@
 - **Outils**:
   - Docker (pour le déploiement)
   - Git & GitHub (gestion de version)
-  - Jira / Trello (gestion agile)
+  - Trello (gestion agile)
 
 ## 🚀 Installation
 
