@@ -21,4 +21,9 @@ public class AuthController {
         AuthResponse response = authService.authenticate(request);
         return ResponseEntity.ok(response);
     }
+
+    @GetMapping("/register")
+    public String showRegistrationForm() {
+        return "register";
+    }
 }

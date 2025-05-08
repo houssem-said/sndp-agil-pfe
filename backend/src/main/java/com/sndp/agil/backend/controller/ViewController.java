@@ -8,11 +8,16 @@ public class ViewController {
 
     @GetMapping("/login")
     public String showLoginPage() {
-        return "login"; // correspond à src/main/resources/templates/login.html
+        return "login";
     }
 
     @GetMapping("/home")
     public String showHomePage() {
-        return "home"; // correspond à src/main/resources/templates/home.html
+        return "home";
+    }
+
+    @GetMapping("/register")
+    public String showRegisterPage() {
+        return "register";
     }
 }

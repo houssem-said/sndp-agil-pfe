@@ -2,9 +2,11 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Accueil</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}" />
 </head>
 <body>
-<h1>Bienvenue</h1>
+<h1>Bienvenue sur SNDP AGIL</h1>
+<a th:href="@{/register}">Créer un compte</a>
 <a th:href="@{/login}">Se connecter</a>
 </body>
 </html>
