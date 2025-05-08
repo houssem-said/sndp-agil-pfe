@@ -9,5 +9,5 @@ import org.springframework.context.annotation.Configuration;
 @ConfigurationProperties(prefix = "jwt")
 public class JwtConfig {
     private String secretKey = "CleSecreteSuperSecure123!";
-    private long expirationMs = 86400000; // 24h en ms
+    private long expirationMs = 86400000;
 }
