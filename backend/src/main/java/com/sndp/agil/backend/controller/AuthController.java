@@ -6,6 +6,8 @@ import com.sndp.agil.backend.model.Utilisateur;
 import com.sndp.agil.backend.security.JwtUtils;
 import com.sndp.agil.backend.security.UserDetailsImpl;
 import com.sndp.agil.backend.service.AuthService;
+import com.sndp.agil.backend.service.EmailService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -19,25 +21,31 @@ public class AuthController {
     private final AuthService authService;
     private final JwtUtils jwtUtils;
     private final AuthenticationManager authenticationManager;
+    private final EmailService emailService;
 
-    public AuthController(AuthService authService, JwtUtils jwtUtils, AuthenticationManager authenticationManager) {
+    public AuthController(AuthService authService, JwtUtils jwtUtils, AuthenticationManager authenticationManager, EmailService emailService) {
         this.authService = authService;
         this.jwtUtils = jwtUtils;
         this.authenticationManager = authenticationManager;
+        this.emailService = emailService;
     }
 
-    // ✅ Inscription d’un utilisateur
     @PostMapping("/register")
-    public ResponseEntity<AuthResponse> register(@RequestParam String username,
-                                                 @RequestParam String password,
-                                                 @RequestParam String email,
-                                                 @RequestParam(defaultValue = "CLIENT") String role) {
+    public ResponseEntity<String> register(@RequestParam String username,
+                                           @RequestParam String password,
+                                           @RequestParam String email,
+                                           @RequestParam(defaultValue = "CLIENT") String role) {
         Utilisateur newUser = authService.registerUser(username, password, email, role);
+
+        // Générer un token de confirmation
         String token = jwtUtils.generateToken(new UserDetailsImpl(newUser));
-        return ResponseEntity.ok(new AuthResponse(token, "Bearer", "ROLE_" + newUser.getRole().name()));
+
+        // Envoyer un e-mail de confirmation à l'utilisateur
+        emailService.sendConfirmationEmail(email, token);
+
+        return ResponseEntity.ok("Utilisateur enregistré. Veuillez vérifier votre e-mail pour confirmer votre compte.");
     }
 
-    // ✅ Connexion d’un utilisateur
     @PostMapping("/login")
     public ResponseEntity<AuthResponse> login(@RequestBody LoginRequest request) {
         // Utiliser les méthodes du record (nommé, pas getX)
@@ -50,4 +58,29 @@ public class AuthController {
 
         return ResponseEntity.ok(new AuthResponse(token, "Bearer", userDetails.getAuthorities().toString()));
     }
+
+    @PostMapping("/confirm")
+    public ResponseEntity<String> confirmAccount(@RequestParam String token) {
+        boolean isValid = authService.validateConfirmationToken(token);
+        if (isValid) {
+            authService.activateUser(token);
+            return ResponseEntity.ok("Compte activé !");
+        }
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Token invalide !");
+    }
+
+    @PostMapping("/admin/login")
+    public ResponseEntity<AuthResponse> adminLogin(@RequestBody LoginRequest request) {
+        Utilisateur adminUser = authService.authenticateAdmin(request); // Authentifier comme admin
+        String token = jwtUtils.generateToken(new UserDetailsImpl(adminUser));
+        return ResponseEntity.ok(new AuthResponse(token, "Bearer", "ROLE_ADMIN"));
+    }
+
+    @PostMapping("/agent/login")
+    public ResponseEntity<AuthResponse> agentLogin(@RequestBody LoginRequest request) {
+        Utilisateur agentUser = authService.authenticateAgent(request); // Authentifier comme agent
+        String token = jwtUtils.generateToken(new UserDetailsImpl(agentUser));
+        return ResponseEntity.ok(new AuthResponse(token, "Bearer", "ROLE_AGENT"));
+    }
+
 }

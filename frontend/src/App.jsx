@@ -10,7 +10,6 @@ const PrivateRoute = ({ children }) => {
 
 function App() {
     return (
-        // ⚠️ Supprimez tout <BrowserRouter> présent ici
         <Routes>
             <Route path="/login" element={<Login />} />
             <Route

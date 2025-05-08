@@ -31,7 +31,8 @@ public class Utilisateur {
 
     private LocalDateTime dateCreation = LocalDateTime.now();
 
-    // Constructeur par défaut (requis par JPA)
+    private boolean active = false;  // Par défaut, l'utilisateur est inactif
+
     public Utilisateur() {}
 
     // Constructeur avec paramètres
@@ -40,6 +41,16 @@ public class Utilisateur {
         this.email = email;
         this.motDePasse = motDePasse;
         this.role = role;
+    }
+
+    // Méthode pour activer l'utilisateur
+    public void setActive(boolean active) {
+        this.active = active;
+    }
+
+    // Méthode pour vérifier si l'utilisateur est actif
+    public boolean isActive() {
+        return active;
     }
 
     public Collection<? extends GrantedAuthority> getAuthorities() {
