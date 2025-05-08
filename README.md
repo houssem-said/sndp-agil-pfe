@@ -1,44 +1,30 @@
-# SNDP Agile - Gestion de Projet de Fin d'Études (PFE)
+# 🏢 SNDP AGIL – Application de gestion de file d'attente et de prise de rendez-vous
 
-![GitHub](https://img.shields.io/github/license/houssem-said/sndp-agil-pfe?color=blue)
-![GitHub last commit](https://img.shields.io/github/last-commit/houssem-said/sndp-agil-pfe)
+Ce projet a été réalisé dans le cadre d’un stage de fin d’études (PFE) de licence en informatique à la société **SNDP AGIL** (Tunisie). Il a pour objectif de concevoir et développer une application web permettant de gérer efficacement les files d'attente et les rendez-vous dans les stations-service et agences de la SNDP AGIL.
 
-**SNDP Agile** est une application de gestion des Projets de Fin d'Études (PFE) conçue pour faciliter le suivi et la coordination entre étudiants, enseignants et administrateurs.
+## 🚀 Objectifs du projet
 
-## 📌 Fonctionnalités
+- Optimiser la gestion de l’affluence des clients.
+- Réduire les temps d’attente et améliorer la satisfaction client.
+- Offrir un système de réservation de tickets ou de prise de rendez-vous en ligne.
+- Permettre aux opérateurs de gérer les files d’attente en temps réel.
+- Offrir aux administrateurs une interface de gestion centralisée et sécurisée.
 
-- **Gestion des utilisateurs** (Étudiants, Enseignants, Administrateurs)
-- **Dépôt et validation des sujets de PFE**
-- **Attribution des encadreurs et jurys**
-- **Calendrier des soutenances**
-- **Suivi de l'avancement des projets**
-- **Notifications et alertes**
-- **Rapports et statistiques**
+## 🛠️ Technologies utilisées
 
-## 🛠 Technologies Utilisées
+- **Frontend** : React.js + Vite + Tailwind CSS
+- **Backend** : Node.js + Express
+- **Base de données** : MySQL
+- **Authentification** : JSON Web Tokens (JWT)
+- **Déploiement** : Docker
 
-- **Backend**: 
-  - Java / Spring Boot
-  - Base de données : MySQL / PostgreSQL
-- **Frontend**: 
-  - Angular / React (ou autre framework JS)
-  - Bootstrap / Tailwind CSS
-- **Outils**:
-  - Docker (pour le déploiement)
-  - Git & GitHub (gestion de version)
-  - Trello (gestion agile)
+## 📦 Architecture du projet
 
-## 🚀 Installation
-
-### Prérequis
-- Java JDK 11+
-- Node.js (pour le frontend)
-- MySQL / PostgreSQL
-- Docker (optionnel)
-
-### Étapes d'installation
-
-1. **Cloner le dépôt** :
-   ```bash
-   git clone https://github.com/houssem-said/sndp-agil-pfe.git
-   cd sndp-agil-pfe
+```bash
+sndp-agil-pfe/
+├── client/             # Application frontend (React + Vite)
+├── server/             # API backend (Node.js + Express + Prisma)
+├── prisma/             # Schéma de la base de données et migrations
+├── .env                # Variables d'environnement (à ne pas partager)
+├── README.md           # Fichier de présentation du projet
+└── ...
