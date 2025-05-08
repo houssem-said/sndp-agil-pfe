@@ -4,7 +4,7 @@ const api = axios.create({
     baseURL: "http://localhost:8080/api",
 });
 
-// Intercepteur pour injecter le token JWT
+// Injection automatique du token JWT
 api.interceptors.request.use((config) => {
     const token = localStorage.getItem("token");
     if (token) {
@@ -13,7 +13,7 @@ api.interceptors.request.use((config) => {
     return config;
 });
 
-// Gestion des erreurs 401 (token expiré)
+// Gestion des erreurs globales
 api.interceptors.response.use(
     (response) => response,
     (error) => {
@@ -25,4 +25,7 @@ api.interceptors.response.use(
     }
 );
 
-export default api;
+export const login = (credentials) => api.post("/auth/login", credentials);
+export const fetchProjects = () => api.get("/projects");
+export const createProject = (project) => api.post("/projects", project);
+export const fetchUsers = () => api.get("/users");

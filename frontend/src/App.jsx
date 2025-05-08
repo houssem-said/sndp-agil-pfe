@@ -1,32 +1,29 @@
-import { useEffect, useState } from 'react';
-import { authService } from './api/authService';
+import { Routes, Route, Navigate } from 'react-router-dom'
+import Login from './components/Login'
+import Dashboard from './components/Dashboard'
+import { useAuth } from './contexts/AuthContext'
 
-function App() {
-    const [message, setMessage] = useState('Chargement...');
-
-    useEffect(() => {
-        authService.login({
-            email: 'test@example.com',  // Remplacez par un email valide de votre base
-            password: 'test123'         // Remplacez par un mot de passe valide
-        })
-            .then(response => {
-                setMessage(`Connexion réussie! Token: ${response.data.token.substring(0, 10)}...`);
-                console.log('Réponse complète:', response.data);
-            })
-            .catch(error => {
-                const errorMsg = error.response?.data?.message || error.message;
-                setMessage(`Échec: ${errorMsg}`);
-                console.error('Détails erreur:', error.response?.data);
-            });
-    }, []);
-
-    return (
-        <div style={{ padding: '20px', fontFamily: 'Arial' }}>
-            <h1>Test connexion backend</h1>
-            <p>{message}</p>
-            <p>Vérifiez aussi la console (F12)</p>
-        </div>
-    );
+const PrivateRoute = ({ children }) => {
+    const { user } = useAuth()
+    return user ? children : <Navigate to="/login" />
 }
 
-export default App;
+function App() {
+    return (
+        // ⚠️ Supprimez tout <BrowserRouter> présent ici
+        <Routes>
+            <Route path="/login" element={<Login />} />
+            <Route
+                path="/dashboard"
+                element={
+                    <PrivateRoute>
+                        <Dashboard />
+                    </PrivateRoute>
+                }
+            />
+            <Route path="*" element={<Navigate to="/login" />} />
+        </Routes>
+    )
+}
+
+export default App
