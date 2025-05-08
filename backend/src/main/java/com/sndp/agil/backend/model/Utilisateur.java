@@ -23,12 +23,24 @@ public class Utilisateur {
     @Column(unique = true, nullable = false)
     private String email;
 
+    @Column(nullable = false)
     private String motDePasse;
 
     @Enumerated(EnumType.STRING)
     private RoleUtilisateur role;
 
     private LocalDateTime dateCreation = LocalDateTime.now();
+
+    // Constructeur par défaut (requis par JPA)
+    public Utilisateur() {}
+
+    // Constructeur avec paramètres
+    public Utilisateur(String nom, String email, String motDePasse, RoleUtilisateur role) {
+        this.nom = nom;
+        this.email = email;
+        this.motDePasse = motDePasse;
+        this.role = role;
+    }
 
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority("ROLE_" + role.name()));
@@ -40,4 +52,3 @@ public class Utilisateur {
     @OneToMany(mappedBy = "utilisateur")
     private List<RendezVous> rendezVous;
 }
-
