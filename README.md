@@ -16,15 +16,12 @@ Ce projet a été réalisé dans le cadre d’un stage de fin d’études (PFE) 
 - **Backend** : Node.js + Express
 - **Base de données** : MySQL
 - **Authentification** : JSON Web Tokens (JWT)
-- **Déploiement** : Docker
 
 ## 📦 Architecture du projet
 
 ```bash
 sndp-agil-pfe/
 ├── client/             # Application frontend (React + Vite)
-├── server/             # API backend (Node.js + Express + Prisma)
-├── prisma/             # Schéma de la base de données et migrations
-├── .env                # Variables d'environnement (à ne pas partager)
+├── server/             # API backend (Node.js + Express)
 ├── README.md           # Fichier de présentation du projet
 └── ...
