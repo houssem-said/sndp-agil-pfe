@@ -1,5 +1,6 @@
 package com.sndp.agil.backend.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.Data;
 import java.time.LocalDateTime;
@@ -21,6 +22,7 @@ public class RendezVous {
     @Enumerated(EnumType.STRING)
     private StatutRendezVous statut = StatutRendezVous.CONFIRME;
 
+    @JsonBackReference
     @ManyToOne
     @JoinColumn(name = "utilisateur_id", nullable = false)
     private Utilisateur utilisateur;

@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const api = axios.create({
-    baseURL: "http://localhost:8080/api",
+    baseURL: "http://localhost:8080",
 });
 
 // Injection automatique du token JWT
@@ -29,3 +29,5 @@ export const login = (credentials) => api.post("/auth/login", credentials);
 export const fetchProjects = () => api.get("/projects");
 export const createProject = (project) => api.post("/projects", project);
 export const fetchUsers = () => api.get("/users");
+
+export default api;

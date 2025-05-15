@@ -8,6 +8,8 @@ import org.springframework.stereotype.Component;
 import java.util.*;
 import java.util.stream.Collectors;
 import io.jsonwebtoken.security.Keys;
+import java.security.Key;
+import java.nio.charset.StandardCharsets;
 
 @Component
 public class JwtUtils {
@@ -16,6 +18,17 @@ public class JwtUtils {
 
     @Value("${jwt.expirationMs}")
     private long expirationMs;
+
+    // Générer une clé secrète sécurisée avec HS512
+    private Key getSigningKey() {
+        // Si secretKey est trop courte, on peut la transformer en un Key sécurisé.
+        byte[] keyBytes = secretKey.getBytes(StandardCharsets.UTF_8);
+        if (keyBytes.length < 64) {
+            // Assurez-vous que la clé est suffisamment longue pour HS512 (512 bits minimum)
+            throw new IllegalArgumentException("La clé secrète est trop courte pour HS512. Veuillez vérifier la configuration.");
+        }
+        return Keys.hmacShaKeyFor(keyBytes);  // Utilisation de la clé secrète de la configuration, transformée en clé sécurisée
+    }
 
     public String generateToken(UserDetails userDetails) {
         Map<String, Object> claims = new HashMap<>();
@@ -28,7 +41,7 @@ public class JwtUtils {
                 .setSubject(userDetails.getUsername())
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + expirationMs))
-                .signWith(SignatureAlgorithm.HS512, secretKey)
+                .signWith(getSigningKey())  // Utilisation de la clé correcte pour signer
                 .compact();
     }
 
@@ -44,8 +57,9 @@ public class JwtUtils {
 
     // Extraire toutes les réclamations du token
     private Claims extractAllClaims(String token) {
-        return Jwts.parser()
-                .setSigningKey(secretKey)
+        return Jwts.parserBuilder()
+                .setSigningKey(getSigningKey()) // Utilisation de la clé correcte pour l'analyse
+                .build()
                 .parseClaimsJws(token)
                 .getBody();
     }
@@ -61,6 +75,7 @@ public class JwtUtils {
             extractAllClaims(token);  // Si l'extraction réussit, le token est valide
             return true;
         } catch (JwtException e) {
+            System.err.println("Token JWT invalide : " + e.getMessage());
             return false;  // Si une exception est levée, le token est invalide
         }
     }
@@ -70,8 +85,4 @@ public class JwtUtils {
         return extractClaim(token, Claims::getExpiration).getTime();
     }
 
-    // Interface pour résoudre des réclamations
-    private interface ClaimsResolver<T> {
-        T resolve(Claims claims);
-    }
 }
