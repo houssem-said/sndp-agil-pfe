@@ -1,4 +1,4 @@
-# 🏢 SNDP AGIL – Application de gestion de file d'attente et de prise de rendez-vous
+# 🏢 SNDP AGIL – Application de gestion de file d'attente avec tickets et de prise de rendez-vous
 
 Ce projet a été réalisé dans le cadre d’un stage de fin d’études (PFE) de licence en informatique à la société **SNDP AGIL** (Tunisie). Il a pour objectif de concevoir et développer une application web permettant de gérer efficacement les files d'attente et les rendez-vous dans les stations-service et agences de la SNDP AGIL.
 
