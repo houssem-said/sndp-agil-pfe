@@ -62,11 +62,6 @@ public class SecurityConfig {
                                 "/v3/api-docs/**"
                         ).permitAll()
                         .anyRequest().authenticated())
-                .formLogin(form -> form
-                        .loginPage("/login")
-                        .loginProcessingUrl("/api/auth/login")
-                        .defaultSuccessUrl("/home", true)
-                        .permitAll())
                 .logout(logout -> logout
                         .logoutUrl("/api/auth/logout")
                         .permitAll())
@@ -81,7 +76,8 @@ public class SecurityConfig {
         configuration.setAllowedOrigins(List.of(
                 "http://localhost:4200",
                 "http://127.0.0.1:5500",
-                "http://localhost:8080"
+                "http://localhost:8080",
+                "http://localhost:5173"
         ));
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
         configuration.setAllowedHeaders(List.of(

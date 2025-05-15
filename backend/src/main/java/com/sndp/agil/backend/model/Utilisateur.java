@@ -1,5 +1,6 @@
 package com.sndp.agil.backend.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
@@ -57,9 +58,11 @@ public class Utilisateur {
         return List.of(new SimpleGrantedAuthority("ROLE_" + role.name()));
     }
 
+    @JsonManagedReference  // Ajout de la gestion de la sérialisation côté Utilisateur
     @OneToMany(mappedBy = "utilisateur")
     private List<Ticket> tickets;
 
+    @JsonManagedReference  // Ajout de la gestion de la sérialisation côté Utilisateur
     @OneToMany(mappedBy = "utilisateur")
     private List<RendezVous> rendezVous;
 }

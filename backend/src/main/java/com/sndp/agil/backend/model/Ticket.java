@@ -1,5 +1,6 @@
 package com.sndp.agil.backend.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.Data;
 import java.time.LocalDateTime;
@@ -32,6 +33,7 @@ public class Ticket {
     @JoinColumn(name = "guichet_id", nullable = false)
     private Guichet guichet;
 
+    @JsonBackReference
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "utilisateur_id", nullable = false)
     private Utilisateur utilisateur;

@@ -29,25 +29,41 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
-        String token = extractToken(request);
-        if (token != null && jwtUtils.validateToken(token)) {
-            Claims claims = jwtUtils.parseToken(token);
-            String username = claims.getSubject();
 
-            @SuppressWarnings("unchecked")
-            List<String> roles = claims.get("roles", List.class);
+        String path = request.getServletPath();
 
-            var authorities = roles.stream()
-                    .map(SimpleGrantedAuthority::new)
-                    .collect(Collectors.toList());
-
-            var auth = new UsernamePasswordAuthenticationToken(
-                    username,
-                    null,
-                    authorities
-            );
-            SecurityContextHolder.getContext().setAuthentication(auth);
+        // Ignorer la validation JWT sur les routes publiques
+        if (path.startsWith("/api/auth/login") ||
+                path.startsWith("/api/auth/register") ||
+                path.startsWith("/api/auth/confirm")) {
+            filterChain.doFilter(request, response);
+            return;
         }
+
+        String token = extractToken(request);
+
+        if (token != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+            if (jwtUtils.validateToken(token)) {
+                Claims claims = jwtUtils.parseToken(token);
+                String username = claims.getSubject();
+
+                @SuppressWarnings("unchecked")
+                List<String> roles = claims.get("roles", List.class);
+
+                var authorities = roles.stream()
+                        .map(SimpleGrantedAuthority::new)
+                        .collect(Collectors.toList());
+
+                var auth = new UsernamePasswordAuthenticationToken(
+                        username,
+                        null,
+                        authorities
+                );
+                auth.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                SecurityContextHolder.getContext().setAuthentication(auth);
+            }
+        }
+
         filterChain.doFilter(request, response);
     }
 
