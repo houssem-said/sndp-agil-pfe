@@ -13,7 +13,7 @@ Ce projet a été réalisé dans le cadre d’un stage de fin d’études (PFE) 
 ## 🛠️ Technologies utilisées
 
 - **Frontend** : React.js + Vite + Tailwind CSS
-- **Backend** : Node.js + Express
+- **Backend** : Node.js
 - **Base de données** : MySQL
 - **Authentification** : JSON Web Tokens (JWT)
 
