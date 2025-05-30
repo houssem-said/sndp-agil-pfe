@@ -16,3 +16,10 @@ Ce projet a été réalisé dans le cadre d’un stage de fin d’études (PFE) 
 - **Backend** : Node.js
 - **Base de données** : MySQL
 - **Authentification** : JSON Web Tokens (JWT)
+
+  
+## Base de données du projet SNDP-AGIL
+
+Ce fichier `sndp-agil.sql` contient l'export de la base de données utilisée dans le projet.
+
+
