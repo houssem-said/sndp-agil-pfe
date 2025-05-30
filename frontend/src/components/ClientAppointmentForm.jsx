@@ -17,6 +17,7 @@ const ClientAppointmentForm = () => {
                 headers: { Authorization: `Bearer ${token}` },
             });
             setMessage("Rendez-vous enregistré avec succès !");
+            // eslint-disable-next-line no-unused-vars
         } catch (err) {
             setMessage("Erreur lors de l'enregistrement.");
         }

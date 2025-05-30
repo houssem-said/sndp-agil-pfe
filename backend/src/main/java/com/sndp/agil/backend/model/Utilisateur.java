@@ -3,6 +3,7 @@ package com.sndp.agil.backend.model;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
@@ -13,6 +14,7 @@ import java.util.List;
 @Data
 @Entity
 @Table(name = "utilisateur")
+@Getter
 public class Utilisateur {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -42,6 +44,10 @@ public class Utilisateur {
         this.email = email;
         this.motDePasse = motDePasse;
         this.role = role;
+    }
+
+    public String getUsername() {
+        return this.email;
     }
 
     // Méthode pour activer l'utilisateur

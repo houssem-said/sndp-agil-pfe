@@ -2,7 +2,6 @@ package com.sndp.agil.backend.security;
 
 import com.sndp.agil.backend.repository.BlacklistedTokenRepository;
 import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -12,11 +11,13 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.web.filter.OncePerRequestFilter;
+
 import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class JwtAuthFilter extends OncePerRequestFilter {
+
     private final JwtUtils jwtUtils;
     private final BlacklistedTokenRepository blacklistedTokenRepository;
 
@@ -32,10 +33,8 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
         String path = request.getServletPath();
 
-        // Ignorer la validation JWT sur les routes publiques
-        if (path.startsWith("/api/auth/login") ||
-                path.startsWith("/api/auth/register") ||
-                path.startsWith("/api/auth/confirm")) {
+        // Routes publiques à exclure du filtre JWT
+        if (isPublicPath(path)) {
             filterChain.doFilter(request, response);
             return;
         }
@@ -43,6 +42,11 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         String token = extractToken(request);
 
         if (token != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+            if (blacklistedTokenRepository.existsByToken(token)) {
+                response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Token expiré ou invalide.");
+                return;
+            }
+
             if (jwtUtils.validateToken(token)) {
                 Claims claims = jwtUtils.parseToken(token);
                 String username = claims.getSubject();
@@ -54,17 +58,31 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                         .map(SimpleGrantedAuthority::new)
                         .collect(Collectors.toList());
 
-                var auth = new UsernamePasswordAuthenticationToken(
+                var authentication = new UsernamePasswordAuthenticationToken(
                         username,
                         null,
                         authorities
                 );
-                auth.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                SecurityContextHolder.getContext().setAuthentication(auth);
+                authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                SecurityContextHolder.getContext().setAuthentication(authentication);
             }
         }
 
         filterChain.doFilter(request, response);
+    }
+
+    private boolean isPublicPath(String path) {
+        return path.startsWith("/api/auth/")
+                || path.startsWith("/swagger-ui/")
+                || path.startsWith("/v3/api-docs")
+                || path.startsWith("/static/")
+                || path.startsWith("/css/")
+                || path.startsWith("/js/")
+                || path.equals("/")
+                || path.equals("/login")
+                || path.equals("/register")
+                || path.equals("/index.html")
+                || path.equals("/login.html");
     }
 
     private String extractToken(HttpServletRequest request) {

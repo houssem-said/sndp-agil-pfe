@@ -1,9 +1,11 @@
 package com.sndp.agil.backend.config;
 
 import com.sndp.agil.backend.repository.BlacklistedTokenRepository;
+import com.sndp.agil.backend.repository.UtilisateurRepository;
 import com.sndp.agil.backend.security.CustomLogoutHandler;
 import com.sndp.agil.backend.security.JwtAuthFilter;
 import com.sndp.agil.backend.security.JwtUtils;
+import com.sndp.agil.backend.security.UserDetailsServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -13,7 +15,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -28,46 +30,49 @@ import java.util.List;
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
+
     private final JwtUtils jwtUtils;
     private final BlacklistedTokenRepository blacklistedTokenRepository;
     private final CustomLogoutHandler logoutHandler;
+    private final UtilisateurRepository utilisateurRepository;
 
     @Bean
     public JwtAuthFilter jwtAuthFilter() {
         return new JwtAuthFilter(jwtUtils, blacklistedTokenRepository);
     }
 
+
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(AbstractHttpConfigurer::disable)
+                .csrf(AbstractHttpConfigurer::disable) // Désactive CSRF (utile en API REST stateless)
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-                .sessionManagement(session -> session
-                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
-                                "/",
-                                "/register",
-                                "/api/auth/register",
-                                "/css/**",
-                                "/js/**",
-                                "/index.html",
-                                "/login",
-                                "/login.html",
-                                "/static/**",
-                                "/css/**",
-                                "/js/**",
-                                "/api/auth/**",
+                                "/", "/register", "/api/auth/register", "/api/auth/**",
+                                "/css/**", "/js/**",
+                                "/index.html", "/login", "/login.html",
+                                "/static/**","styles.css",
                                 "/swagger-ui/**",
                                 "/v3/api-docs/**"
                         ).permitAll()
-                        .anyRequest().authenticated())
+                        .anyRequest().authenticated()
+                )
                 .logout(logout -> logout
                         .logoutUrl("/api/auth/logout")
-                        .permitAll())
+                        .addLogoutHandler(logoutHandler)
+                        .permitAll()
+                )
                 .addFilterBefore(jwtAuthFilter(), UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
+    }
+
+    @Bean
+    public UserDetailsService userDetailsService() {
+        return new UserDetailsServiceImpl(utilisateurRepository);
     }
 
     @Bean
@@ -105,8 +110,8 @@ public class SecurityConfig {
     }
 
     @Bean
-    public AuthenticationManager authenticationManager(
-            AuthenticationConfiguration config) throws Exception {
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
         return config.getAuthenticationManager();
     }
+
 }
