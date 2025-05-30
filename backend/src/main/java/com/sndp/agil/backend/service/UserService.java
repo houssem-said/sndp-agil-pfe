@@ -1,6 +1,7 @@
 package com.sndp.agil.backend.service;
 
 import com.sndp.agil.backend.dto.UserCreateRequest;
+import com.sndp.agil.backend.dto.UserDTO;
 import com.sndp.agil.backend.exception.UserAlreadyExistsException;
 import com.sndp.agil.backend.model.Utilisateur;
 import com.sndp.agil.backend.repository.UtilisateurRepository;
@@ -17,12 +18,10 @@ public class UserService {
 
     @Transactional
     public Utilisateur createUser(UserCreateRequest request) {
-        // Vérification existence utilisateur
         if (utilisateurRepository.existsByEmail(request.email())) {
             throw new UserAlreadyExistsException("Email déjà utilisé");
         }
 
-        // Construction de l'entité
         Utilisateur user = new Utilisateur();
         user.setEmail(request.email());
         user.setMotDePasse(passwordEncoder.encode(request.password()));
@@ -33,5 +32,11 @@ public class UserService {
 
     public Utilisateur getUserById(Long id) {
         return utilisateurRepository.findById(id).orElse(null);
+    }
+
+    public UserDTO findByEmail(String email) {
+        Utilisateur user = utilisateurRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Utilisateur non trouvé"));
+        return new UserDTO(user.getEmail(), user.getEmail(), user.getRole().name());
     }
 }

@@ -43,21 +43,27 @@ public class AuthController {
         // Envoyer un e-mail de confirmation à l'utilisateur
         emailService.sendConfirmationEmail(email, token);
 
-        return ResponseEntity.ok("Utilisateur enregistré. Veuillez vérifier votre e-mail pour confirmer votre compte.");
+        return ResponseEntity.ok("Utilisateur enregistré. Veuillez vérifier vos e-mails pour confirmer votre compte.");
     }
 
     @PostMapping("/login")
     public ResponseEntity<AuthResponse> login(@RequestBody LoginRequest request) {
-        // Utiliser les méthodes du record (nommé, pas getX)
         Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword()));
+                new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
         String token = jwtUtils.generateToken(userDetails);
 
-        return ResponseEntity.ok(new AuthResponse(token, "Bearer", userDetails.getAuthorities().toString()));
+        // Pour récupérer le rôle au format simple (par exemple ROLE_CLIENT)
+        String role = userDetails.getAuthorities().stream()
+                .findFirst()
+                .map(a -> a.getAuthority())
+                .orElse("ROLE_CLIENT");
+
+        return ResponseEntity.ok(new AuthResponse(token, "Bearer", role));
     }
+
 
     @PostMapping("/confirm")
     public ResponseEntity<String> confirmAccount(@RequestParam String token) {
@@ -82,5 +88,23 @@ public class AuthController {
         String token = jwtUtils.generateToken(new UserDetailsImpl(agentUser));
         return ResponseEntity.ok(new AuthResponse(token, "Bearer", "ROLE_AGENT"));
     }
+
+    @GetMapping("/me")
+    public ResponseEntity<Utilisateur> getCurrentUser(Authentication authentication) {
+        if (authentication == null || !authentication.isAuthenticated()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        String email = authentication.getName();
+        Utilisateur user = authService.findByEmail(email);
+
+        if (user == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+
+        user.setMotDePasse(null);
+        return ResponseEntity.ok(user);
+    }
+
 
 }

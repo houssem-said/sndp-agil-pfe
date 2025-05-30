@@ -1,99 +1,155 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import api from '../services/api';
+import { FaUser, FaEnvelope, FaLock, FaUserPlus } from 'react-icons/fa';
 
 export default function Register() {
-    const [username, setUsername] = useState('');
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [confirmPassword, setConfirmPassword] = useState('');
-    const [role] = useState('CLIENT'); // Par défaut, rôle CLIENT
+    const [formData, setFormData] = useState({
+        username: '',
+        email: '',
+        password: '',
+        confirmPassword: ''
+    });
     const [error, setError] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
     const navigate = useNavigate();
+
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setFormData(prev => ({ ...prev, [name]: value }));
+    };
 
     const handleRegister = async (e) => {
         e.preventDefault();
         setError('');
 
-        if (password !== confirmPassword) {
-            setError("Les mots de passe ne correspondent pas.");
+        if (formData.password !== formData.confirmPassword) {
+            setError("Les mots de passe ne correspondent pas");
             return;
         }
 
+        setIsLoading(true);
+
         try {
-            await api.post('/auth/register', { username, email, password, role });
-            navigate('/login');
-            // eslint-disable-next-line no-unused-vars
+            await api.post('/api/auth/register', {
+                username: formData.username,
+                email: formData.email,
+                password: formData.password,
+                role: 'CLIENT'
+            });
+            navigate('/login?registered=true');
         } catch (err) {
-            setError("Erreur lors de l'inscription. Veuillez réessayer.");
+            setError(err.response?.data?.message || "Erreur lors de l'inscription");
+        } finally {
+            setIsLoading(false);
         }
     };
 
     return (
-        <div className="flex items-center justify-center min-h-screen bg-gray-100 px-4">
-            <form onSubmit={handleRegister} className="bg-white p-8 rounded-2xl shadow-lg w-full max-w-md">
-                <h2 className="text-3xl font-bold text-center text-blue-600 mb-6">Créer un compte</h2>
+        <div className="fusion-auth-page">
+            <div className="fusion-page-content">
+                <section className="auth-section">
+                    <div className="auth-container">
+                        <h1 className="auth-title">Créer un compte <span className="highlight">AGIL SNDP</span></h1>
 
-                {error && <p className="text-red-500 mb-4 text-center">{error}</p>}
+                        {error && (
+                            <div className="auth-error">
+                                {error}
+                            </div>
+                        )}
 
-                <div className="mb-4">
-                    <label className="block mb-1 font-medium">Nom d'utilisateur</label>
-                    <input
-                        type="text"
-                        className="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        value={username}
-                        onChange={(e) => setUsername(e.target.value)}
-                        required
-                    />
-                </div>
+                        <form onSubmit={handleRegister} className="auth-form">
+                            <div className="form-group">
+                                <label className="form-label">Nom complet</label>
+                                <div className="input-with-icon">
+                                    <FaUser className="input-icon" />
+                                    <input
+                                        type="text"
+                                        name="username"
+                                        className="form-input"
+                                        placeholder="Votre nom complet"
+                                        value={formData.username}
+                                        onChange={handleChange}
+                                        required
+                                    />
+                                </div>
+                            </div>
 
-                <div className="mb-4">
-                    <label className="block mb-1 font-medium">Adresse e-mail</label>
-                    <input
-                        type="email"
-                        className="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        required
-                    />
-                </div>
+                            <div className="form-group">
+                                <label className="form-label">Adresse e-mail</label>
+                                <div className="input-with-icon">
+                                    <FaEnvelope className="input-icon" />
+                                    <input
+                                        type="email"
+                                        name="email"
+                                        className="form-input"
+                                        placeholder="votre@email.com"
+                                        value={formData.email}
+                                        onChange={handleChange}
+                                        required
+                                    />
+                                </div>
+                            </div>
 
-                <div className="mb-4">
-                    <label className="block mb-1 font-medium">Mot de passe</label>
-                    <input
-                        type="password"
-                        className="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        required
-                    />
-                </div>
+                            <div className="form-group">
+                                <label className="form-label">Mot de passe</label>
+                                <div className="input-with-icon">
+                                    <FaLock className="input-icon" />
+                                    <input
+                                        type="password"
+                                        name="password"
+                                        className="form-input"
+                                        placeholder="••••••••"
+                                        value={formData.password}
+                                        onChange={handleChange}
+                                        required
+                                        minLength="6"
+                                    />
+                                </div>
+                                <p className="input-hint">Minimum 6 caractères</p>
+                            </div>
 
-                <div className="mb-6">
-                    <label className="block mb-1 font-medium">Confirmer le mot de passe</label>
-                    <input
-                        type="password"
-                        className="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        value={confirmPassword}
-                        onChange={(e) => setConfirmPassword(e.target.value)}
-                        required
-                    />
-                </div>
+                            <div className="form-group">
+                                <label className="form-label">Confirmer le mot de passe</label>
+                                <div className="input-with-icon">
+                                    <FaLock className="input-icon" />
+                                    <input
+                                        type="password"
+                                        name="confirmPassword"
+                                        className="form-input"
+                                        placeholder="••••••••"
+                                        value={formData.confirmPassword}
+                                        onChange={handleChange}
+                                        required
+                                    />
+                                </div>
+                            </div>
 
-                <button
-                    type="submit"
-                    className="w-full bg-blue-600 text-white py-2 rounded-lg font-semibold hover:bg-blue-700 transition duration-300"
-                >
-                    S'inscrire
-                </button>
+                            <button
+                                type="submit"
+                                disabled={isLoading}
+                                className="primary-btn auth-btn"
+                            >
+                                {isLoading ? (
+                                    <span className="auth-spinner">↻</span>
+                                ) : (
+                                    <>
+                                        <FaUserPlus className="btn-icon" />
+                                        S'inscrire
+                                    </>
+                                )}
+                            </button>
 
-                <p className="text-center mt-4 text-sm text-gray-600">
-                    Déjà un compte ?{" "}
-                    <Link to="/login" className="text-blue-600 hover:underline font-medium">
-                        Se connecter
-                    </Link>
-                </p>
-            </form>
+                            <div className="auth-links">
+                                <span>Déjà un compte ?</span>
+                                <Link to="/login" className="auth-link">
+                                    Se connecter
+                                </Link>
+                            </div>
+                        </form>
+                    </div>
+                </section>
+            </div>
         </div>
     );
 }

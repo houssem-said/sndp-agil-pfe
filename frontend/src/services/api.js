@@ -29,5 +29,6 @@ export const login = (credentials) => api.post("/auth/login", credentials);
 export const fetchProjects = () => api.get("/projects");
 export const createProject = (project) => api.post("/projects", project);
 export const fetchUsers = () => api.get("/users");
+export const fetchUserProfile = () => api.get('/api/auth/me');
 
 export default api;

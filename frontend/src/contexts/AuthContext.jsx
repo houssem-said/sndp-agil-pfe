@@ -1,5 +1,5 @@
 import { createContext, useContext, useState } from "react";
-import { login as apiLogin } from "../services/api";
+import {fetchUserProfile, login as apiLogin} from "../services/api";
 
 const AuthContext = createContext();
 
@@ -9,7 +9,7 @@ export const AuthProvider = ({ children }) => {
     const login = async (credentials) => {
         const { data: token } = await apiLogin(credentials);
         localStorage.setItem("token", token);
-        const { data: userData } = await fetchUserProfile(); // À implémenter dans api.js
+        const { data: userData } = await fetchUserProfile();
         setUser(userData);
     };
 

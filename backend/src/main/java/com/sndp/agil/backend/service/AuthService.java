@@ -7,16 +7,17 @@ import com.sndp.agil.backend.model.Utilisateur;
 import com.sndp.agil.backend.repository.UtilisateurRepository;
 import com.sndp.agil.backend.security.JwtUtils;
 import com.sndp.agil.backend.security.UserDetailsImpl;
-import com.sndp.agil.backend.service.EmailService;  // Importer le service d'email
+import com.sndp.agil.backend.service.EmailService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
 public class AuthService {
+
     private final UtilisateurRepository utilisateurRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtUtils jwtUtils;
-    private final EmailService emailService;  // Injection du service d'email
+    private final EmailService emailService;
 
     public AuthService(UtilisateurRepository utilisateurRepository,
                        PasswordEncoder passwordEncoder,
@@ -25,12 +26,12 @@ public class AuthService {
         this.utilisateurRepository = utilisateurRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtUtils = jwtUtils;
-        this.emailService = emailService;  // Initialisation du service d'email
+        this.emailService = emailService;
     }
 
     // Inscription d'un utilisateur
     public Utilisateur registerUser(String username, String password, String email, String role) {
-        // Validation de l'email
+        // Validation de l'email (regex simple)
         if (!email.matches("^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$")) {
             throw new IllegalArgumentException("Email invalide");
         }
@@ -40,15 +41,26 @@ public class AuthService {
             throw new IllegalArgumentException("Le mot de passe doit contenir au moins 8 caractères");
         }
 
-        // Création de l'utilisateur
-        RoleUtilisateur userRole = RoleUtilisateur.valueOf(role.toUpperCase());
+        // Vérifier si l'email est déjà utilisé
+        if (utilisateurRepository.existsByEmail(email)) {
+            throw new IllegalArgumentException("Email déjà utilisé");
+        }
+
+        // Création de l'utilisateur avec mot de passe encodé
+        RoleUtilisateur userRole;
+        try {
+            userRole = RoleUtilisateur.valueOf(role.toUpperCase());
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException("Rôle utilisateur invalide");
+        }
+
         Utilisateur utilisateur = new Utilisateur(username, passwordEncoder.encode(password), email, userRole);
         utilisateur = utilisateurRepository.save(utilisateur);
 
-        // Générer un token de confirmation (par exemple JWT)
+        // Générer un token de confirmation (JWT)
         String token = jwtUtils.generateToken(new UserDetailsImpl(utilisateur));
 
-        // Envoyer un e-mail de confirmation à l'utilisateur
+        // Envoyer un e-mail de confirmation
         emailService.sendConfirmationEmail(email, token);
 
         return utilisateur;
@@ -56,7 +68,7 @@ public class AuthService {
 
     // Authentification d'un utilisateur
     public AuthResponse authenticate(LoginRequest request) {
-        Utilisateur user = utilisateurRepository.findByEmail(request.getUsername())
+        Utilisateur user = utilisateurRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new RuntimeException("Utilisateur non trouvé"));
 
         if (!passwordEncoder.matches(request.getPassword(), user.getMotDePasse())) {
@@ -69,8 +81,8 @@ public class AuthService {
 
     // Authentification d'un administrateur
     public Utilisateur authenticateAdmin(LoginRequest request) {
-        Utilisateur user = utilisateurRepository.findByEmail(request.getUsername())
-                .orElseThrow(() -> new RuntimeException("Admin non trouvé"));
+        Utilisateur user = utilisateurRepository.findByEmail(request.getEmail())
+                .orElseThrow(() -> new RuntimeException("Utilisateur non trouvé"));
         if (!user.getRole().equals(RoleUtilisateur.ADMIN)) {
             throw new RuntimeException("Accès réservé aux administrateurs !");
         }
@@ -82,8 +94,8 @@ public class AuthService {
 
     // Authentification d'un agent
     public Utilisateur authenticateAgent(LoginRequest request) {
-        Utilisateur user = utilisateurRepository.findByEmail(request.getUsername())
-                .orElseThrow(() -> new RuntimeException("Agent non trouvé"));
+        Utilisateur user = utilisateurRepository.findByEmail(request.getEmail())
+                .orElseThrow(() -> new RuntimeException("Utilisateur non trouvé"));
         if (!user.getRole().equals(RoleUtilisateur.AGENT)) {
             throw new RuntimeException("Accès réservé aux agents !");
         }
@@ -96,23 +108,24 @@ public class AuthService {
     // Validation du token de confirmation
     public boolean validateConfirmationToken(String token) {
         try {
-            return jwtUtils.validateToken(token);  // Vérifie la validité du token
+            return jwtUtils.validateToken(token);
         } catch (Exception e) {
-            return false;  // Si une exception est lancée, le token est invalide
+            return false;
         }
     }
 
-    // Activation de l'utilisateur
+    // Activation de l'utilisateur après confirmation
     public void activateUser(String token) {
         String email = jwtUtils.getUsernameFromToken(token);
-
-        // Trouver l'utilisateur dans la base de données
-        Utilisateur utilisateur = utilisateurRepository.findByEmail(email)
+        Utilisateur user = utilisateurRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("Utilisateur non trouvé"));
 
-        // Activer l'utilisateur
-        utilisateur.setActive(true);
-        utilisateurRepository.save(utilisateur);
+        user.setActive(true);
+        utilisateurRepository.save(user);
+    }
+
+    public Utilisateur findByEmail(String email) {
+        return utilisateurRepository.findByEmail(email).orElse(null);
     }
 
 }

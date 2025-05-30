@@ -2,8 +2,12 @@ import axios from 'axios';
 
 // Crée une instance Axios
 const api = axios.create({
-    baseURL: '/api',
+    baseURL: 'http://localhost:8080',
+    headers: {
+        'Content-Type': 'application/json',
+    },
 });
+
 
 // Ajoute un interceptor pour inclure le token
 api.interceptors.request.use(

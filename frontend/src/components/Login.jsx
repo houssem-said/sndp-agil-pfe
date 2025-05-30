@@ -1,19 +1,22 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import api from '../services/api';
+import { FaSignInAlt, FaEnvelope, FaLock } from 'react-icons/fa';
 
 export default function Login() {
-    const [username, setUsername] = useState('');
+    const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
     const navigate = useNavigate();
 
     const handleLogin = async (e) => {
         e.preventDefault();
         setError('');
+        setIsLoading(true);
 
         try {
-            const res = await api.post('/api/auth/login', { username, password });
+            const res = await api.post('/api/auth/login', { email, password });
             const { token, role } = res.data;
 
             localStorage.setItem('token', token);
@@ -21,61 +24,96 @@ export default function Login() {
 
             switch (role) {
                 case 'ADMIN':
-                    navigate('/admin');
+                    navigate('/admin/dashboard');
                     break;
                 case 'OPERATOR':
-                    navigate('/operator');
+                    navigate('/operator/dashboard');
                     break;
                 case 'CLIENT':
-                    navigate('/client');
+                    navigate('/client/dashboard');
                     break;
                 default:
                     navigate('/');
             }
-            // eslint-disable-next-line no-unused-vars
         } catch (err) {
-            setError("Identifiants invalides ou erreur serveur.");
+            setError(err.response?.data?.message || "Identifiants incorrects ou problème de connexion");
+        } finally {
+            setIsLoading(false);
         }
     };
 
     return (
-        <div className="flex items-center justify-center h-screen bg-gray-100">
-            <form onSubmit={handleLogin} className="bg-white p-8 rounded shadow-md w-96">
-                <h2 className="text-2xl font-bold mb-6 text-center text-blue-600">Connexion</h2>
-                {error && <p className="text-red-500 mb-4">{error}</p>}
-                <div className="mb-4">
-                    <label className="block mb-1 font-medium">Nom d'utilisateur</label>
-                    <input
-                        type="text"
-                        className="w-full border rounded px-3 py-2"
-                        value={username}
-                        onChange={(e) => setUsername(e.target.value)}
-                        required
-                    />
-                </div>
-                <div className="mb-6">
-                    <label className="block mb-1 font-medium">Mot de passe</label>
-                    <input
-                        type="password"
-                        className="w-full border rounded px-3 py-2"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        required
-                    />
-                </div>
-                <button
-                    type="submit"
-                    className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700"
-                >
-                    Se connecter
-                </button>
-                <p className="text-center mt-4 text-sm text-gray-600">
-                    Pas encore de compte ?{" "}
-                    <Link to="/register" className="text-blue-600 hover:underline font-medium">
-                        S'inscrire
-                    </Link>
-                </p>
-            </form>
+        <div className="fusion-auth-page">
+            <div className="fusion-page-content">
+                <section className="auth-section">
+                    <div className="auth-container">
+                        <h1 className="auth-title">Connexion à <span className="highlight">AGIL SNDP</span></h1>
+
+                        {error && (
+                            <div className="auth-error">
+                                {error}
+                            </div>
+                        )}
+
+                        <form onSubmit={handleLogin} className="auth-form">
+                            <div className="form-group">
+                                <label className="form-label">Adresse e-mail</label>
+                                <div className="input-with-icon">
+                                    <FaEnvelope className="input-icon" />
+                                    <input
+                                        type="email"
+                                        className="form-input"
+                                        placeholder="votre@email.com"
+                                        value={email}
+                                        onChange={(e) => setEmail(e.target.value)}
+                                        required
+                                    />
+                                </div>
+                            </div>
+
+                            <div className="form-group">
+                                <label className="form-label">Mot de passe</label>
+                                <div className="input-with-icon">
+                                    <FaLock className="input-icon" />
+                                    <input
+                                        type="password"
+                                        className="form-input"
+                                        placeholder="••••••••"
+                                        value={password}
+                                        onChange={(e) => setPassword(e.target.value)}
+                                        required
+                                    />
+                                </div>
+                            </div>
+
+                            <button
+                                type="submit"
+                                disabled={isLoading}
+                                className="primary-btn auth-btn"
+                            >
+                                {isLoading ? (
+                                    <span className="auth-spinner">↻</span>
+                                ) : (
+                                    <>
+                                        <FaSignInAlt className="btn-icon" />
+                                        Se connecter
+                                    </>
+                                )}
+                            </button>
+
+                            <div className="auth-links">
+                                <Link to="/forgot-password" className="auth-link">
+                                    Mot de passe oublié ?
+                                </Link>
+                                <span className="auth-separator">|</span>
+                                <Link to="/register" className="auth-link">
+                                    Créer un compte
+                                </Link>
+                            </div>
+                        </form>
+                    </div>
+                </section>
+            </div>
         </div>
     );
 }

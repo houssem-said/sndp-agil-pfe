@@ -1,89 +1,525 @@
-:root {
-  --font-sans: 'Inter', system-ui, Avenir, Helvetica, Arial, sans-serif;
-  --color-bg: #f1f5f9; /* gris clair */
-  --color-text: #1e293b; /* gris foncé */
-  --color-primary: #3b82f6; /* bleu sobre */
-  --color-primary-hover: #2563eb;
-  --color-white: #ffffff;
-
-  font-family: var(--font-sans);
-  font-size: 16px;
-  font-weight: 400;
-  line-height: 1.5;
-  background-color: var(--color-bg);
-  color: var(--color-text);
-
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+/* Layout moderne */
+.avada-layout {
+  --primary-color: #2cbc63;
+  --text-color: #023a51;
+  --light-bg: #f9fafb;
+  --border-color: #e8ebef;
 }
 
-body {
-  margin: 0;
-  padding: 0;
-  min-width: 320px;
-  min-height: 100vh;
+.fusion-header {
+  background: white;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  padding: 15px 0;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+.fusion-header-content {
+  max-width: 1200px;
+  margin: 0 auto;
   display: flex;
-  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 20px;
+}
+
+.fusion-logo a {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--text-color);
+  text-decoration: none;
+}
+
+.fusion-menu {
+  display: flex;
+  list-style: none;
+  gap: 25px;
+  align-items: center;
+}
+
+.fusion-menu a {
+  color: var(--text-color);
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.3s;
+}
+
+.fusion-menu a:hover {
+  color: var(--primary-color);
+}
+
+.fusion-button {
+  background: var(--primary-color);
+  color: white;
+  padding: 10px 20px;
+  border-radius: 50px;
+  font-weight: 600;
+}
+
+/* Footer */
+.fusion-footer {
+  background: var(--light-bg);
+  border-top: 1px solid var(--border-color);
+  padding: 60px 0 30px;
+}
+
+.fusion-footer-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.fusion-footer-widgets {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 40px;
+  margin-bottom: 40px;
+}
+
+.fusion-widget-column h4 {
+  color: var(--text-color);
+  margin-bottom: 20px;
+  font-size: 18px;
+}
+
+.fusion-widget-column address,
+.fusion-widget-column ul {
+  color: #59667d;
+  line-height: 1.6;
+}
+
+.fusion-widget-column ul {
+  list-style: none;
+  padding: 0;
+}
+
+.fusion-widget-column ul a {
+  color: #59667d;
+  text-decoration: none;
+}
+
+.fusion-widget-column ul a:hover {
+  color: var(--primary-color);
+}
+
+.fusion-social-links {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.fusion-social-links a {
+  color: var(--text-color);
+  font-size: 20px;
+}
+
+.fusion-copyright {
+  text-align: center;
+  color: #59667d;
+  padding-top: 30px;
+  border-top: 1px solid var(--border-color);
+}
+
+/* Page d'accueil simple */
+.fusion-home-page {
+  max-width: 800px;
+  margin: 50px auto;
+  padding: 0 20px;
+  text-align: center;
+}
+
+.fusion-page-content h1 {
+  color: var(--text-color);
+  margin-bottom: 30px;
+}
+
+.fusion-separator {
+  height: 1px;
+  background: var(--border-color);
+  margin: 40px 0;
+}
+
+.fusion-contact-info,
+.fusion-opening-hours,
+.fusion-social-media {
+  margin-bottom: 40px;
+}
+
+.fusion-contact-info h2,
+.fusion-opening-hours h2,
+.fusion-social-media h2 {
+  color: var(--text-color);
+  margin-bottom: 15px;
+}
+
+.fusion-social-icons {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  font-size: 24px;
+  margin-bottom: 15px;
+}
+
+/* Bouton retour en haut */
+.fusion-scroll-to-top {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  width: 50px;
+  height: 50px;
+  background: var(--primary-color);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  display: flex;
   align-items: center;
   justify-content: center;
-  background-color: var(--color-bg);
-  color: var(--color-text);
-}
-
-/* Liens */
-a {
-  font-weight: 500;
-  color: var(--color-primary);
-  text-decoration: none;
-  transition: color 0.2s;
-}
-a:hover {
-  color: var(--color-primary-hover);
-}
-
-/* Titres */
-h1, h2, h3, h4, h5, h6 {
-  font-weight: 600;
-  margin: 0.5em 0;
-  color: var(--color-text);
-}
-
-h1 {
-  font-size: 2.5rem;
-  line-height: 1.2;
-}
-
-h2 {
-  font-size: 2rem;
-}
-
-/* Boutons */
-button {
-  border-radius: 0.5rem;
-  border: none;
-  padding: 0.75em 1.5em;
-  font-size: 1rem;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: var(--color-primary);
-  color: var(--color-white);
   cursor: pointer;
-  transition: background-color 0.2s, transform 0.1s;
-}
-button:hover {
-  background-color: var(--color-primary-hover);
-  transform: translateY(-1px);
-}
-button:focus,
-button:focus-visible {
-  outline: 3px solid var(--color-primary-hover);
-  outline-offset: 2px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  z-index: 999;
 }
 
-/* Wrapper spécifique page home si besoin */
-.wrapper {
-  text-align: center;
+.fusion-home-page {
+  max-width: 1200px;
+  margin: 0 auto;
   padding: 2rem;
+  color: #023a51;
+}
+
+.hero-section {
+  display: flex;
+  align-items: center;
+  gap: 3rem;
+  margin-bottom: 4rem;
+}
+
+.hero-content {
+  flex: 1;
+}
+
+.hero-image {
+  flex: 1;
+  text-align: center;
+  font-size: 8rem;
+}
+
+.highlight {
+  color: #2cbc63;
+}
+
+.tagline {
+  font-size: 1.5rem;
+  margin: 1.5rem 0;
+  color: #59667d;
+}
+
+.cta-buttons {
+  display: flex;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+.primary-btn, .secondary-btn {
+  padding: 0.8rem 1.5rem;
+  border-radius: 50px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.primary-btn {
+  background-color: #2cbc63;
+  color: white;
+  border: none;
+}
+
+.primary-btn:hover {
+  background-color: #239a52;
+}
+
+.secondary-btn {
+  background-color: transparent;
+  color: #2cbc63;
+  border: 2px solid #2cbc63;
+}
+
+.secondary-btn:hover {
+  background-color: #f0f9f4;
+}
+
+.benefits-section, .how-it-works, .services-section, .testimonials, .final-cta {
+  margin: 5rem 0;
+  text-align: center;
+}
+
+.benefits-grid, .services-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+  margin-top: 3rem;
+}
+
+.benefit-card, .service-card {
+  background: #f9fafb;
+  padding: 2rem;
+  border-radius: 10px;
+  transition: transform 0.3s;
+}
+
+.benefit-card:hover, .service-card:hover {
+  transform: translateY(-5px);
+}
+
+.benefit-icon {
+  font-size: 2.5rem;
+  color: #2cbc63;
+  margin-bottom: 1rem;
+}
+
+.steps {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  max-width: 800px;
+  margin: 3rem auto;
+}
+
+.step {
+  display: flex;
+  gap: 1.5rem;
+  align-items: flex-start;
+  text-align: left;
+}
+
+.step-number {
+  background: #2cbc63;
+  color: white;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  flex-shrink: 0;
+}
+
+.testimonial-cards {
+  display: flex;
+  gap: 2rem;
+  justify-content: center;
+  margin-top: 2rem;
+}
+
+.testimonial {
+  background: #f9fafb;
+  padding: 2rem;
+  border-radius: 10px;
+  max-width: 400px;
+  position: relative;
+}
+
+.testimonial:before {
+  content: '"';
+  font-size: 5rem;
+  color: #e8ebef;
+  position: absolute;
+  top: -1rem;
+  left: 1rem;
+  z-index: 0;
+}
+
+.testimonial p {
+  position: relative;
+  z-index: 1;
+  font-style: italic;
+}
+
+.client {
+  margin-top: 1rem;
+  font-weight: bold;
+  color: #2cbc63;
+}
+
+.final-cta {
+  background: #f9fafb;
+  padding: 3rem;
+  border-radius: 10px;
+}
+
+.primary-btn.large {
+  padding: 1rem 2.5rem;
+  font-size: 1.1rem;
+  margin: 1.5rem 0;
+}
+
+.login-prompt {
+  color: #59667d;
+}
+
+.login-prompt a {
+  color: #2cbc63;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+@media (max-width: 768px) {
+  .hero-section {
+    flex-direction: column;
+  }
+
+  .testimonial-cards {
+    flex-direction: column;
+    align-items: center;
+  }
+}
+
+/* Styles communs pour Login et Register */
+.fusion-auth-page {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+  color: #023a51;
+}
+
+.auth-section {
+  display: flex;
+  justify-content: center;
+  margin: 3rem 0;
+}
+
+.auth-container {
+  background: #f9fafb;
+  padding: 3rem;
+  border-radius: 10px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+  width: 100%;
+  max-width: 500px;
+}
+
+.auth-title {
+  font-size: 2rem;
+  text-align: center;
+  margin-bottom: 2rem;
+  color: #023a51;
+}
+
+.highlight {
+  color: #2cbc63;
+}
+
+.auth-error {
+  background: #fee2e2;
+  color: #dc2626;
+  padding: 1rem;
+  border-radius: 8px;
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.form-label {
+  font-weight: 600;
+  color: #023a51;
+}
+
+.input-with-icon {
+  position: relative;
+}
+
+.input-icon {
+  position: absolute;
+  left: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #59667d;
+}
+
+.form-input {
+  width: 100%;
+  padding: 0.8rem 1rem 0.8rem 2.5rem;
+  border: 1px solid #e8ebef;
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: all 0.3s;
+}
+
+.form-input:focus {
+  outline: none;
+  border-color: #2cbc63;
+  box-shadow: 0 0 0 3px rgba(44, 188, 99, 0.2);
+}
+
+.input-hint {
+  font-size: 0.8rem;
+  color: #59667d;
+  margin-top: 0.3rem;
+}
+
+.auth-btn {
+  width: 100%;
+  padding: 1rem;
+  font-size: 1rem;
+  margin-top: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.auth-spinner {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.auth-links {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 1.5rem;
+  color: #59667d;
+}
+
+.auth-separator {
+  color: #e8ebef;
+}
+
+.auth-link {
+  color: #2cbc63;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.auth-link:hover {
+  text-decoration: underline;
+}
+
+@media (max-width: 768px) {
+  .auth-container {
+    padding: 2rem;
+  }
+
+  .auth-title {
+    font-size: 1.5rem;
+  }
 }
