@@ -66,7 +66,7 @@ export default function Home() {
                             <div className="step-number">3</div>
                             <div className="step-content">
                                 <h3>Présentez-vous à l'agence</h3>
-                                <p>Arrivez 10 minutes avant votre rendez-vous et votre ticket</p>
+                                <p>Arrivez 10 minutes avant votre rendez-vous muni de votre ticket</p>
                             </div>
                         </div>
                     </div>

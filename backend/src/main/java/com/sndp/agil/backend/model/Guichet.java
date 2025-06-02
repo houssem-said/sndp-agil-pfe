@@ -18,7 +18,7 @@ public class Guichet {
 
     @ManyToOne
     @JoinColumn(name = "service_id")
-    private Service service;
+    private ServiceEntity service;
 
     @OneToMany(mappedBy = "guichet")
     private List<Ticket> tickets;

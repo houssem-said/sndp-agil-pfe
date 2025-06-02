@@ -7,6 +7,7 @@ import java.util.List;
 
 public interface RendezVousRepository extends JpaRepository<RendezVous, Long> {
     List<RendezVous> findByDateHeureBetween(LocalDateTime start, LocalDateTime end);
-    List<RendezVous> findByUtilisateurId(Long utilisateurId);
+    List<RendezVous> findByUserId(Long userId);
     boolean existsByDateHeureAndServiceId(LocalDateTime dateHeure, Long serviceId);
+    List<RendezVous> findByServiceId(Long serviceId);
 }

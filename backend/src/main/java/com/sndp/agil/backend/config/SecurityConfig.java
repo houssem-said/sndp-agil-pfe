@@ -1,18 +1,17 @@
 package com.sndp.agil.backend.config;
 
-import com.sndp.agil.backend.repository.BlacklistedTokenRepository;
-import com.sndp.agil.backend.repository.UtilisateurRepository;
 import com.sndp.agil.backend.security.CustomLogoutHandler;
 import com.sndp.agil.backend.security.JwtAuthFilter;
 import com.sndp.agil.backend.security.JwtUtils;
 import com.sndp.agil.backend.security.UserDetailsServiceImpl;
+import com.sndp.agil.backend.repository.BlacklistedTokenRepository;
+import com.sndp.agil.backend.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -24,44 +23,50 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import java.util.Arrays;
 import java.util.List;
 
 @Configuration
-@EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
 
     private final JwtUtils jwtUtils;
     private final BlacklistedTokenRepository blacklistedTokenRepository;
     private final CustomLogoutHandler logoutHandler;
-    private final UtilisateurRepository utilisateurRepository;
+    private final UserRepository userRepository;
+    private final UserDetailsServiceImpl userDetailsService;
 
     @Bean
     public JwtAuthFilter jwtAuthFilter() {
-        return new JwtAuthFilter(jwtUtils, blacklistedTokenRepository);
+        return new JwtAuthFilter(jwtUtils, userDetailsService, blacklistedTokenRepository);
     }
-
-
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(AbstractHttpConfigurer::disable) // Désactive CSRF (utile en API REST stateless)
+                .csrf(AbstractHttpConfigurer::disable)
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
+                        // Accès public (inscription, login, confirmation email, Swagger, ressources statiques)
                         .requestMatchers(
-                                "/", "/register", "/api/auth/register", "/api/auth/**",
-                                "/css/**", "/js/**",
-                                "/index.html", "/login", "/login.html",
-                                "/static/**","styles.css",
+                                "/auth/register",
+                                "/auth/login",
+                                "/auth/confirm/**",
+                                "/v3/api-docs/**",
                                 "/swagger-ui/**",
-                                "/v3/api-docs/**"
+                                "/swagger-ui.html",
+                                "/static/**"
                         ).permitAll()
+                        // Client : accès à ses tickets et RDV
+                        .requestMatchers("/tickets/**", "/rendezvous/**").hasAnyRole("CLIENT", "AGENT", "ADMIN")
+                        // ADMIN seulement
+                        .requestMatchers("/admin/**").hasRole("ADMIN")
+                        // Les autres requêtes nécessitent authentification
                         .anyRequest().authenticated()
                 )
                 .logout(logout -> logout
-                        .logoutUrl("/api/auth/logout")
+                        .logoutUrl("/auth/logout")
                         .addLogoutHandler(logoutHandler)
                         .permitAll()
                 )
@@ -72,36 +77,7 @@ public class SecurityConfig {
 
     @Bean
     public UserDetailsService userDetailsService() {
-        return new UserDetailsServiceImpl(utilisateurRepository);
-    }
-
-    @Bean
-    public CorsConfigurationSource corsConfigurationSource() {
-        CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of(
-                "http://localhost:4200",
-                "http://127.0.0.1:5500",
-                "http://localhost:8080",
-                "http://localhost:5173"
-        ));
-        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
-        configuration.setAllowedHeaders(List.of(
-                "Authorization",
-                "Content-Type",
-                "X-Requested-With",
-                "Accept",
-                "X-XSRF-TOKEN"
-        ));
-        configuration.setExposedHeaders(List.of(
-                "Authorization",
-                "X-XSRF-TOKEN"
-        ));
-        configuration.setAllowCredentials(true);
-        configuration.setMaxAge(3600L);
-
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", configuration);
-        return source;
+        return new UserDetailsServiceImpl(userRepository);
     }
 
     @Bean
@@ -110,8 +86,31 @@ public class SecurityConfig {
     }
 
     @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
+    public AuthenticationManager authenticationManager(
+            AuthenticationConfiguration config) throws Exception {
         return config.getAuthenticationManager();
     }
 
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowedOrigins(Arrays.asList(
+                "http://localhost:3000",    // frontend
+                "http://localhost:5173",    // Vite
+                "http://localhost:4200"
+        ));
+        configuration.setAllowedMethods(Arrays.asList(
+                "GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"
+        ));
+        configuration.setAllowedHeaders(Arrays.asList(
+                "Authorization", "Content-Type", "X-Requested-With", "Accept"
+        ));
+        configuration.setExposedHeaders(List.of("Authorization"));
+        configuration.setAllowCredentials(true);
+        configuration.setMaxAge(3600L);
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
+    }
 }

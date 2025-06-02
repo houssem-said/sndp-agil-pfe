@@ -1,6 +1,8 @@
 import { Routes, Route } from "react-router-dom";
 import OperatorAppointments from './components/OperatorAppointments';
 import OperatorTickets from './components/OperatorTickets';
+import ForgotPassword from "./components/ForgotPassword.jsx";
+import ResetPassword from "./components/ResetPassword.jsx";
 import Login from './components/Login';
 import Register from "./components/Register";
 import Home from "./pages/Home";
@@ -22,8 +24,10 @@ function App() {
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} />
                 <Route path="/confirm-email" element={<ConfirmEmail />} />
+                <Route path="/forgot-password" element={<ForgotPassword />} />
+                <Route path="reset-password/:token" element={<ResetPassword />} />
 
-                {/* Toutes les autres routes avec Layout */}
+            {/* Toutes les autres routes avec Layout */}
                 <Route element={<Layout />}>
                     <Route index element={<Home />} />
                     <Route path="admin/dashboard" element={

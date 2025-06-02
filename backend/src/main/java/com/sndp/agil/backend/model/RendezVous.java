@@ -3,12 +3,16 @@ package com.sndp.agil.backend.model;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import java.time.LocalDateTime;
 
 @Data
+@NoArgsConstructor
 @Entity
 @Table(name = "rendez_vous")
 public class RendezVous {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -25,14 +29,15 @@ public class RendezVous {
     @JsonBackReference
     @ManyToOne
     @JoinColumn(name = "utilisateur_id", nullable = false)
-    private Utilisateur utilisateur;
+    private User user;
 
     @ManyToOne
     @JoinColumn(name = "service_id", nullable = false)
-    private Service service;
+    private ServiceEntity service;
 
     @PrePersist
     public void generateReference() {
-        this.reference = "RDV-" + LocalDateTime.now().getYear() + "-" + LocalDateTime.now().getMonth() + "-" + LocalDateTime.now().getYear() + "-" + String.format("%03d", this.id);
+        LocalDateTime now = LocalDateTime.now();
+        this.reference = "RDV-" + now.getYear() + "-" + now.getMonthValue() + "-" + now.getDayOfMonth() + "-" + now.getHour() + now.getMinute() + now.getSecond();
     }
 }

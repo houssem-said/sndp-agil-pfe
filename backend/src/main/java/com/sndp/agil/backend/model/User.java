@@ -3,7 +3,6 @@ package com.sndp.agil.backend.model;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;
-import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
@@ -14,8 +13,8 @@ import java.util.List;
 @Data
 @Entity
 @Table(name = "utilisateur")
-@Getter
-public class Utilisateur {
+public class User {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -34,41 +33,58 @@ public class Utilisateur {
 
     private LocalDateTime dateCreation = LocalDateTime.now();
 
-    private boolean active = false;  // Par défaut, l'utilisateur est inactif
+    private boolean active = false; // Par défaut inactif
 
-    public Utilisateur() {}
+    // Constructeur par défaut
+    public User() {}
 
-    // Constructeur avec paramètres
-    public Utilisateur(String nom, String email, String motDePasse, RoleUtilisateur role) {
+    // Constructeur personnalisé
+    public User(String nom, String email, String motDePasse, RoleUtilisateur role) {
         this.nom = nom;
         this.email = email;
         this.motDePasse = motDePasse;
         this.role = role;
     }
 
+    // Pour Spring Security (UserDetails)
     public String getUsername() {
         return this.email;
     }
 
-    // Méthode pour activer l'utilisateur
-    public void setActive(boolean active) {
-        this.active = active;
+    public String getPassword() {
+        return this.motDePasse;
     }
 
-    // Méthode pour vérifier si l'utilisateur est actif
-    public boolean isActive() {
-        return active;
+    public RoleUtilisateur getRole() {
+        return this.role;
     }
 
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority("ROLE_" + role.name()));
     }
 
-    @JsonManagedReference  // Ajout de la gestion de la sérialisation côté Utilisateur
-    @OneToMany(mappedBy = "utilisateur")
+    public boolean isActive() {
+        return this.active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
+    }
+
+    public ServiceEntity getService() {
+        return this.service;
+    }
+
+    @ManyToOne
+    @JoinColumn(name = "service_id")
+    private ServiceEntity service;
+
+
+    @JsonManagedReference
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Ticket> tickets;
 
-    @JsonManagedReference  // Ajout de la gestion de la sérialisation côté Utilisateur
-    @OneToMany(mappedBy = "utilisateur")
+    @JsonManagedReference
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<RendezVous> rendezVous;
 }

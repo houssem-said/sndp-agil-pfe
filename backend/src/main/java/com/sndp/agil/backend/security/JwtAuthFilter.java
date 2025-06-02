@@ -1,95 +1,74 @@
 package com.sndp.agil.backend.security;
 
 import com.sndp.agil.backend.repository.BlacklistedTokenRepository;
-import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
+import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
-import java.util.List;
-import java.util.stream.Collectors;
 
+@Component
 public class JwtAuthFilter extends OncePerRequestFilter {
 
     private final JwtUtils jwtUtils;
+    private final UserDetailsServiceImpl userDetailsService;
     private final BlacklistedTokenRepository blacklistedTokenRepository;
 
-    public JwtAuthFilter(JwtUtils jwtUtils, BlacklistedTokenRepository blacklistedTokenRepository) {
+    public JwtAuthFilter(JwtUtils jwtUtils,
+                         UserDetailsServiceImpl userDetailsService,
+                         BlacklistedTokenRepository blacklistedTokenRepository) {
         this.jwtUtils = jwtUtils;
+        this.userDetailsService = userDetailsService;
         this.blacklistedTokenRepository = blacklistedTokenRepository;
     }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
-                                    FilterChain filterChain) throws ServletException, IOException {
+                                    FilterChain filterChain)
+            throws ServletException, IOException {
 
-        String path = request.getServletPath();
+        final String authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
+        final String jwt;
+        final String username;
 
-        // Routes publiques à exclure du filtre JWT
-        if (isPublicPath(path)) {
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             filterChain.doFilter(request, response);
             return;
         }
 
-        String token = extractToken(request);
+        jwt = authHeader.substring(7);
 
-        if (token != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            if (blacklistedTokenRepository.existsByToken(token)) {
-                response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Token expiré ou invalide.");
-                return;
-            }
+        if (blacklistedTokenRepository.existsByToken(jwt)) {
+            filterChain.doFilter(request, response);
+            return;
+        }
 
-            if (jwtUtils.validateToken(token)) {
-                Claims claims = jwtUtils.parseToken(token);
-                String username = claims.getSubject();
+        username = jwtUtils.extractUsername(jwt);
 
-                @SuppressWarnings("unchecked")
-                List<String> roles = claims.get("roles", List.class);
-
-                var authorities = roles.stream()
-                        .map(SimpleGrantedAuthority::new)
-                        .collect(Collectors.toList());
-
-                var authentication = new UsernamePasswordAuthenticationToken(
-                        username,
+        if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+            var userDetails = userDetailsService.loadUserByUsername(username);
+            if (jwtUtils.validateToken(jwt)) { // <--- Correction ici
+                var authToken = new UsernamePasswordAuthenticationToken(
+                        userDetails,
                         null,
-                        authorities
+                        userDetails.getAuthorities()
                 );
-                authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                SecurityContextHolder.getContext().setAuthentication(authentication);
+                authToken.setDetails(
+                        new WebAuthenticationDetailsSource().buildDetails(request)
+                );
+
+                SecurityContextHolder.getContext().setAuthentication(authToken);
             }
         }
 
         filterChain.doFilter(request, response);
-    }
-
-    private boolean isPublicPath(String path) {
-        return path.startsWith("/api/auth/")
-                || path.startsWith("/swagger-ui/")
-                || path.startsWith("/v3/api-docs")
-                || path.startsWith("/static/")
-                || path.startsWith("/css/")
-                || path.startsWith("/js/")
-                || path.equals("/")
-                || path.equals("/login")
-                || path.equals("/register")
-                || path.equals("/index.html")
-                || path.equals("/login.html");
-    }
-
-    private String extractToken(HttpServletRequest request) {
-        String header = request.getHeader("Authorization");
-        if (header != null && header.startsWith("Bearer ")) {
-            return header.substring(7);
-        }
-        return null;
     }
 }

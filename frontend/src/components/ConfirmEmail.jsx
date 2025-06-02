@@ -16,7 +16,7 @@ export default function ConfirmEmail() {
             }
 
             try {
-                const res = await api.post(`/api/auth/confirm?token=${token}`);
+                const res = await api.post(`/auth/confirm?token=${token}`);
                 setMessage(res.data);
                 // eslint-disable-next-line no-unused-vars
             } catch (err) {

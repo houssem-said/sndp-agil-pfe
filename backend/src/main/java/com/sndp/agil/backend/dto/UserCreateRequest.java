@@ -16,6 +16,9 @@ public record UserCreateRequest(
         )
         String password,
 
+        @NotBlank(message = "Le nom est obligatoire")
+        String username,  // ajouté pour le nom complet
+
         @NotNull(message = "Le rôle est obligatoire")
         RoleUtilisateur role
 ) {}

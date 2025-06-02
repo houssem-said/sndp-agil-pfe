@@ -16,6 +16,7 @@ export default function CurrentTickets() {
             const res = await api.get('/operator/tickets/current');
             setTickets(res.data);
             setError('');
+            // eslint-disable-next-line no-unused-vars
         } catch (err) {
             setError('Erreur lors du chargement des tickets en cours');
         } finally {
@@ -29,6 +30,7 @@ export default function CurrentTickets() {
             await api.post(`/operator/tickets/${ticketId}/finish`);
             await fetchCurrentTickets();
             setError('');
+            // eslint-disable-next-line no-unused-vars
         } catch (err) {
             setError('Erreur lors de la finalisation du ticket');
         } finally {

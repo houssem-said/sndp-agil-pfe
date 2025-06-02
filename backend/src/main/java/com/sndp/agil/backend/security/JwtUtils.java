@@ -1,88 +1,110 @@
 package com.sndp.agil.backend.security;
 
 import io.jsonwebtoken.*;
+import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
-import java.util.*;
-import java.util.stream.Collectors;
-import io.jsonwebtoken.security.Keys;
-import java.security.Key;
 import java.nio.charset.StandardCharsets;
+import java.security.Key;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
+/**
+ * Utilitaires pour générer, valider et parser les JSON Web Tokens (JWT).
+ */
 @Component
 public class JwtUtils {
+
     @Value("${jwt.secretKey}")
     private String secretKey;
 
     @Value("${jwt.expirationMs}")
     private long expirationMs;
 
-    // Générer une clé secrète sécurisée avec HS512
+    /**
+     * Construit la clé de signature HMAC-SHA à partir du secretKey configuré.
+     */
     private Key getSigningKey() {
-        // Si secretKey est trop courte, on peut la transformer en un Key sécurisé.
         byte[] keyBytes = secretKey.getBytes(StandardCharsets.UTF_8);
         if (keyBytes.length < 64) {
-            // Assurez-vous que la clé est suffisamment longue pour HS512 (512 bits minimum)
-            throw new IllegalArgumentException("La clé secrète est trop courte pour HS512. Veuillez vérifier la configuration.");
+            throw new IllegalArgumentException("La clé secrète est trop courte pour HS512. Vérifiez la configuration.");
         }
-        return Keys.hmacShaKeyFor(keyBytes);  // Utilisation de la clé secrète de la configuration, transformée en clé sécurisée
+        return Keys.hmacShaKeyFor(keyBytes);
     }
 
+    /**
+     * Génère un JWT à partir des informations de l’utilisateur (roles, subject=email).
+     * Le token contient un claim "roles" contenant la liste des rôles (ex ["ROLE_CLIENT"]).
+     */
     public String generateToken(UserDetails userDetails) {
         Map<String, Object> claims = new HashMap<>();
-        claims.put("roles", userDetails.getAuthorities().stream()
-                .map(authority -> authority.getAuthority())
-                .collect(Collectors.toList()));
+        List<String> roles = userDetails.getAuthorities()
+                .stream()
+                .map(GrantedAuthority::getAuthority)
+                .collect(Collectors.toList());
+        claims.put("roles", roles);
+
+        Date now = new Date();
+        Date expiry = new Date(now.getTime() + expirationMs);
 
         return Jwts.builder()
                 .setClaims(claims)
                 .setSubject(userDetails.getUsername())
-                .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + expirationMs))
-                .signWith(getSigningKey())  // Utilisation de la clé correcte pour signer
+                .setIssuedAt(now)
+                .setExpiration(expiry)
+                .signWith(getSigningKey(), SignatureAlgorithm.HS512)
                 .compact();
     }
 
-    public String getUsernameFromToken(String token) {
-        return extractClaim(token, Claims::getSubject);
-    }
-
-    // Extraire des réclamations spécifiques du token (extraction du sujet ici)
-    public <T> T extractClaim(String token, ClaimsResolver<T> claimsResolver) {
-        Claims claims = extractAllClaims(token);
-        return claimsResolver.resolve(claims);
-    }
-
-    // Extraire toutes les réclamations du token
+    /**
+     * Extrait toutes les revendications (claims) depuis le token.
+     * Lance une exception si le token est invalide ou expiré.
+     */
     private Claims extractAllClaims(String token) {
         return Jwts.parserBuilder()
-                .setSigningKey(getSigningKey()) // Utilisation de la clé correcte pour l'analyse
+                .setSigningKey(getSigningKey())
                 .build()
                 .parseClaimsJws(token)
                 .getBody();
     }
 
-    // Ajouter la méthode parseToken
-    public Claims parseToken(String token) {
-        return extractAllClaims(token);
+    /**
+     * Récupère le sujet (subject) du token, qui correspond ici à l’email de l’utilisateur.
+     */
+    public String extractUsername(String token) {
+        return extractAllClaims(token).getSubject();
     }
 
-    // Vérifier si le token est valide
+    /**
+     * Valide le token : si l’extraction des claims échoue (expiration, signature invalide), renvoie false.
+     */
     public boolean validateToken(String token) {
         try {
-            extractAllClaims(token);  // Si l'extraction réussit, le token est valide
+            extractAllClaims(token);
             return true;
         } catch (JwtException e) {
             System.err.println("Token JWT invalide : " + e.getMessage());
-            return false;  // Si une exception est levée, le token est invalide
+            return false;
         }
     }
 
-    // Extraire la date d'expiration du token
+    /**
+     * Récupère la date d’expiration du token (en millisecondes depuis epoch).
+     */
     public long getExpirationMsFromToken(String token) {
-        return extractClaim(token, Claims::getExpiration).getTime();
+        return extractAllClaims(token).getExpiration().getTime();
     }
 
+    /**
+     * Parse le token et retourne l’objet Claims complet.
+     */
+    public Claims parseToken(String token) {
+        return extractAllClaims(token);
+    }
 }
