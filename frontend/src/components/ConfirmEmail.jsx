@@ -28,10 +28,18 @@ export default function ConfirmEmail() {
     }, [params]);
 
     return (
-        <div className="flex items-center justify-center h-screen">
-            <div className="bg-white p-6 rounded shadow text-center">
-                {message && <p className="text-green-600">{message}</p>}
-                {error && <p className="text-red-500">{error}</p>}
+        <div className="fusion-email-confirmation">
+            <div className="fusion-confirmation-card">
+                {message && (
+                    <p className="fusion-confirmation-message fusion-success">
+                        {message}
+                    </p>
+                )}
+                {error && (
+                    <p className="fusion-confirmation-message fusion-error">
+                        {error}
+                    </p>
+                )}
             </div>
         </div>
     );

@@ -1,6 +1,6 @@
 /* Layout moderne */
 .avada-layout {
-  --primary-color: #2cbc63;
+  --primary-color: #ffea00;
   --text-color: #023a51;
   --light-bg: #f9fafb;
   --border-color: #e8ebef;
@@ -205,7 +205,7 @@
 }
 
 .highlight {
-  color: #2cbc63;
+  color: #ffea00;
 }
 
 .tagline {
@@ -232,19 +232,19 @@
 }
 
 .primary-btn {
-  background-color: #2cbc63;
+  background-color: #ffea00;
   color: white;
   border: none;
 }
 
 .primary-btn:hover {
-  background-color: #239a52;
+  background-color: #ffea00;
 }
 
 .secondary-btn {
   background-color: transparent;
-  color: #2cbc63;
-  border: 2px solid #2cbc63;
+  color: #ffea00;
+  border: 2px solid #ffea00;
 }
 
 .secondary-btn:hover {
@@ -276,7 +276,7 @@
 
 .benefit-icon {
   font-size: 2.5rem;
-  color: #2cbc63;
+  color: #ffea00;
   margin-bottom: 1rem;
 }
 
@@ -296,7 +296,7 @@
 }
 
 .step-number {
-  background: #2cbc63;
+  background: #ffea00;
   color: white;
   width: 2.5rem;
   height: 2.5rem;
@@ -342,7 +342,7 @@
 .client {
   margin-top: 1rem;
   font-weight: bold;
-  color: #2cbc63;
+  color: #ffea00;
 }
 
 .final-cta {
@@ -362,7 +362,7 @@
 }
 
 .login-prompt a {
-  color: #2cbc63;
+  color: #ffea00;
   text-decoration: none;
   font-weight: 600;
 }
@@ -409,7 +409,7 @@
 }
 
 .highlight {
-  color: #2cbc63;
+  color: #ffea00;
 }
 
 .auth-error {
@@ -461,7 +461,7 @@
 
 .form-input:focus {
   outline: none;
-  border-color: #2cbc63;
+  border-color: #ffea00;
   box-shadow: 0 0 0 3px rgba(44, 188, 99, 0.2);
 }
 
@@ -505,7 +505,7 @@
 }
 
 .auth-link {
-  color: #2cbc63;
+  color: #ffea00;
   font-weight: 600;
   text-decoration: none;
 }
@@ -521,5 +521,901 @@
 
   .auth-title {
     font-size: 1.5rem;
+  }
+
+  /* Admin Dashboard Styles */
+  .fusion-admin-dashboard {
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 0 20px;
+    color: var(--text-color);
+  }
+
+  .fusion-admin-title {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 2rem;
+    color: var(--text-color);
+  }
+
+  .fusion-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+  }
+
+  .fusion-stat-card {
+    background: var(--light-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    padding: 2rem;
+    transition: transform 0.3s, box-shadow 0.3s;
+  }
+
+  .fusion-stat-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  }
+
+  .fusion-stat-tickets {
+    border-top: 4px solid #3b82f6;
+  }
+
+  .fusion-stat-rendezvous {
+    border-top: 4px solid #10b981;
+  }
+
+  .fusion-stat-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    color: var(--text-color);
+  }
+
+  .fusion-stat-value {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--primary-color);
+  }
+
+  @media (max-width: 768px) {
+    .fusion-stats-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .fusion-admin-title {
+      font-size: 1.5rem;
+      text-align: center;
+    }
+  }
+
+  /* Appointment Form Styles */
+  .fusion-appointment-form {
+    max-width: 500px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background: var(--light-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+  }
+
+  .fusion-form-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+    color: var(--text-color);
+    text-align: center;
+  }
+
+  .fusion-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .fusion-form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .fusion-form-input {
+    width: 100%;
+    padding: 0.8rem 1rem;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: all 0.3s;
+  }
+
+  .fusion-form-input:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(255, 234, 0, 0.2);
+  }
+
+  .fusion-submit-btn {
+    width: 100%;
+    padding: 0.8rem;
+    font-size: 1rem;
+    font-weight: 600;
+    margin-top: 1rem;
+  }
+
+  .fusion-message {
+    margin-top: 1.5rem;
+    padding: 0.8rem;
+    border-radius: 8px;
+    text-align: center;
+    font-weight: 500;
+  }
+
+  .fusion-success {
+    background-color: #f0fdf4;
+    color: #16a34a;
+    border: 1px solid #86efac;
+  }
+
+  .fusion-error {
+    background-color: #fef2f2;
+    color: #dc2626;
+    border: 1px solid #fca5a5;
+  }
+
+  @media (max-width: 768px) {
+    .fusion-appointment-form {
+      padding: 1.5rem;
+      margin: 1rem;
+    }
+  }
+
+  /* Client Dashboard Styles */
+  .fusion-client-dashboard {
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+  }
+
+  .fusion-dashboard-title {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 2rem;
+    color: var(--text-color);
+    text-align: center;
+  }
+
+  .fusion-error-message {
+    background: #fef2f2;
+    color: #dc2626;
+    padding: 1rem;
+    border-radius: 8px;
+    margin-bottom: 2rem;
+    text-align: center;
+    border: 1px solid #fca5a5;
+  }
+
+  .fusion-section {
+    margin-bottom: 3rem;
+  }
+
+  .fusion-section-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+    color: var(--text-color);
+    border-bottom: 2px solid var(--border-color);
+    padding-bottom: 0.5rem;
+  }
+
+  .fusion-empty-message {
+    color: #59667d;
+    font-style: italic;
+    text-align: center;
+    padding: 1rem;
+  }
+
+  .fusion-list {
+    list-style: none;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .fusion-card {
+    background: var(--light-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 1.5rem;
+    transition: transform 0.3s, box-shadow 0.3s;
+  }
+
+  .fusion-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  }
+
+  .fusion-card p {
+    margin: 0.5rem 0;
+    color: var(--text-color);
+  }
+
+  .fusion-card strong {
+    color: var(--text-color);
+  }
+
+  .fusion-status {
+    font-weight: 600;
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
+  }
+
+  .fusion-status-pending {
+    color: #d97706;
+    background-color: #fef3c7;
+  }
+
+  .fusion-status-confirmed {
+    color: #2563eb;
+    background-color: #dbeafe;
+  }
+
+  .fusion-action-container {
+    text-align: center;
+    margin-top: 3rem;
+  }
+
+  .fusion-primary-btn {
+    padding: 1rem 2.5rem;
+    font-size: 1.1rem;
+  }
+
+  @media (max-width: 768px) {
+    .fusion-client-dashboard {
+      padding: 1.5rem;
+    }
+
+    .fusion-list {
+      grid-template-columns: 1fr;
+    }
+
+    .fusion-dashboard-title {
+      font-size: 1.5rem;
+    }
+  }
+
+  /* Email Confirmation Styles */
+  .fusion-email-confirmation {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    background-color: var(--light-bg);
+    padding: 2rem;
+  }
+
+  .fusion-confirmation-card {
+    background: white;
+    padding: 3rem;
+    border-radius: 10px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+    text-align: center;
+    max-width: 500px;
+    width: 100%;
+    border: 1px solid var(--border-color);
+  }
+
+  .fusion-confirmation-message {
+    font-size: 1.1rem;
+    font-weight: 500;
+    padding: 1rem;
+    border-radius: 8px;
+    margin: 0 auto;
+  }
+
+  .fusion-success {
+    background-color: #f0fdf4;
+    color: #16a34a;
+    border: 1px solid #86efac;
+  }
+
+  .fusion-error {
+    background-color: #fef2f2;
+    color: #dc2626;
+    border: 1px solid #fca5a5;
+  }
+
+  @media (max-width: 768px) {
+    .fusion-confirmation-card {
+      padding: 2rem;
+    }
+
+    .fusion-confirmation-message {
+      font-size: 1rem;
+    }
+  }
+
+  /* Current Tickets Styles */
+  .fusion-tickets-container {
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    border: 1px solid var(--border-color);
+  }
+
+  .fusion-tickets-title {
+    font-size: 1.8rem;
+    font-weight: 700;
+    margin-bottom: 2rem;
+    color: var(--text-color);
+    border-bottom: 2px solid var(--border-color);
+    padding-bottom: 0.5rem;
+  }
+
+  .fusion-error-message {
+    background: #fef2f2;
+    color: #dc2626;
+    padding: 1rem;
+    border-radius: 8px;
+    margin-bottom: 2rem;
+    border: 1px solid #fca5a5;
+  }
+
+  .fusion-empty-message {
+    color: #59667d;
+    font-style: italic;
+    text-align: center;
+    padding: 2rem;
+  }
+
+  .fusion-tickets-list {
+    list-style: none;
+    padding: 0;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  .fusion-ticket-card {
+    background: var(--light-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: transform 0.3s, box-shadow 0.3s;
+  }
+
+  .fusion-ticket-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  }
+
+  .fusion-ticket-info {
+    flex: 1;
+  }
+
+  .fusion-ticket-info p {
+    margin: 0.5rem 0;
+    color: var(--text-color);
+  }
+
+  .fusion-ticket-info strong {
+    color: var(--text-color);
+  }
+
+  .fusion-complete-btn {
+    padding: 0.8rem 1.5rem;
+    background-color: var(--primary-color);
+    color: white;
+    white-space: nowrap;
+    margin-left: 1.5rem;
+  }
+
+  .fusion-complete-btn:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+  }
+
+  .fusion-processing {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  @media (max-width: 768px) {
+    .fusion-tickets-container {
+      padding: 1.5rem;
+    }
+
+    .fusion-ticket-card {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    .fusion-complete-btn {
+      margin-left: 0;
+      margin-top: 1rem;
+      width: 100%;
+    }
+  }
+
+  /* Operator Appointments Styles */
+  .fusion-appointments-container {
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    border: 1px solid var(--border-color);
+  }
+
+  .fusion-table-container {
+    overflow-x: auto;
+    margin-top: 1.5rem;
+  }
+
+  .fusion-appointments-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.95rem;
+  }
+
+  .fusion-appointments-table th {
+    background-color: var(--light-bg);
+    color: var(--text-color);
+    font-weight: 600;
+    text-align: left;
+    padding: 1rem;
+    border-bottom: 2px solid var(--border-color);
+  }
+
+  .fusion-appointments-table td {
+    padding: 1rem;
+    border-bottom: 1px solid var(--border-color);
+    color: var(--text-color);
+  }
+
+  .fusion-appointments-table tr:hover {
+    background-color: rgba(255, 234, 0, 0.05);
+  }
+
+  .fusion-status {
+    display: inline-block;
+    padding: 0.3rem 0.8rem;
+    border-radius: 50px;
+    font-size: 0.85rem;
+    font-weight: 500;
+  }
+
+  .fusion-status-confirmé {
+    background-color: #f0fdf4;
+    color: #16a34a;
+  }
+
+  .fusion-status-en_attente {
+    background-color: #fffbeb;
+    color: #d97706;
+  }
+
+  .fusion-status-annulé {
+    background-color: #fef2f2;
+    color: #dc2626;
+  }
+
+  @media (max-width: 768px) {
+    .fusion-appointments-container {
+      padding: 1.5rem;
+    }
+
+    .fusion-appointments-table th,
+    .fusion-appointments-table td {
+      padding: 0.8rem;
+    }
+  }
+
+  /* Operator Dashboard Styles */
+  .fusion-operator-dashboard {
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    border: 1px solid var(--border-color);
+  }
+
+  .fusion-dashboard-title {
+    font-size: 1.8rem;
+    font-weight: 700;
+    margin-bottom: 2rem;
+    color: var(--text-color);
+    border-bottom: 2px solid var(--border-color);
+    padding-bottom: 0.5rem;
+  }
+
+  .fusion-error-message {
+    background: #fef2f2;
+    color: #dc2626;
+    padding: 1rem;
+    border-radius: 8px;
+    margin-bottom: 2rem;
+    border: 1px solid #fca5a5;
+  }
+
+  .fusion-call-btn {
+    padding: 1rem 2rem;
+    font-size: 1.1rem;
+    margin-bottom: 2rem;
+    background-color: var(--primary-color);
+    color: white;
+  }
+
+  .fusion-call-btn:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+  }
+
+  .fusion-calling {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .fusion-spinner {
+    width: 1rem;
+    height: 1rem;
+    border: 2px solid rgba(255,255,255,0.3);
+    border-radius: 50%;
+    border-top-color: white;
+    animation: fusion-spin 1s ease-in-out infinite;
+  }
+
+  @keyframes fusion-spin {
+    to { transform: rotate(360deg); }
+  }
+
+  .fusion-empty-message {
+    color: #59667d;
+    font-style: italic;
+    text-align: center;
+    padding: 2rem;
+  }
+
+  .fusion-tickets-list {
+    list-style: none;
+    padding: 0;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  .fusion-ticket-card {
+    background: var(--light-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 1.5rem;
+    transition: transform 0.3s, box-shadow 0.3s;
+  }
+
+  .fusion-ticket-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  }
+
+  .fusion-ticket-card p {
+    margin: 0.5rem 0;
+    color: var(--text-color);
+  }
+
+  .fusion-ticket-card strong {
+    color: var(--text-color);
+  }
+
+  .fusion-status {
+    display: inline-block;
+    padding: 0.3rem 0.8rem;
+    border-radius: 4px;
+    font-weight: 500;
+  }
+
+  .fusion-status-waiting {
+    background-color: #fffbeb;
+    color: #d97706;
+  }
+
+  @media (max-width: 768px) {
+    .fusion-operator-dashboard {
+      padding: 1.5rem;
+    }
+
+    .fusion-dashboard-title {
+      font-size: 1.5rem;
+    }
+
+    .fusion-call-btn {
+      width: 100%;
+    }
+  }
+
+  /* Operator Tickets Styles */
+  .fusion-tickets-container {
+    max-width: 800px;
+    margin: 1.5rem auto;
+    padding: 1.5rem;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    border: 1px solid var(--border-color);
+  }
+
+  .fusion-section-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+    color: var(--text-color);
+    border-bottom: 2px solid var(--border-color);
+    padding-bottom: 0.5rem;
+  }
+
+  .fusion-tickets-list {
+    list-style: none;
+    padding: 0;
+    display: grid;
+    gap: 0.75rem;
+  }
+
+  .fusion-ticket-item {
+    background: var(--light-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 1rem;
+    transition: all 0.3s ease;
+  }
+
+  .fusion-ticket-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  }
+
+  .fusion-ticket-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .fusion-ticket-number {
+    font-weight: 600;
+    color: var(--text-color);
+  }
+
+  .fusion-ticket-status {
+    padding: 0.25rem 0.75rem;
+    border-radius: 50px;
+    font-size: 0.85rem;
+    font-weight: 500;
+  }
+
+  .fusion-status-en_cours {
+    background-color: #e0f2fe;
+    color: #0369a1;
+  }
+
+  .fusion-status-en_attente {
+    background-color: #fef3c7;
+    color: #92400e;
+  }
+
+  .fusion-status-terminé {
+    background-color: #dcfce7;
+    color: #166534;
+  }
+
+  .fusion-error-message {
+    background: #fef2f2;
+    color: #dc2626;
+    padding: 1rem;
+    border-radius: 8px;
+    margin-bottom: 1.5rem;
+    border: 1px solid #fca5a5;
+  }
+
+  .fusion-empty-message {
+    color: #64748b;
+    font-style: italic;
+    text-align: center;
+    padding: 1.5rem;
+  }
+
+  @media (max-width: 768px) {
+    .fusion-tickets-container {
+      padding: 1rem;
+      margin: 1rem;
+    }
+
+    .fusion-section-title {
+      font-size: 1.25rem;
+    }
+
+    .fusion-ticket-content {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.5rem;
+    }
+  }
+
+  /* Spinner Styles */
+  .fusion-spinner-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(255, 255, 255, 0.8);
+    z-index: 1000;
+  }
+
+  .fusion-spinner {
+    width: 3rem;
+    height: 3rem;
+    border: 4px solid rgba(255, 234, 0, 0.2); /* Utilisation de la couleur primaire avec opacité */
+    border-top: 4px solid var(--primary-color); /* Couleur primaire du thème */
+    border-radius: 50%;
+    animation: fusion-spin 1s linear infinite;
+  }
+
+  @keyframes fusion-spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+
+  /* Tickets Page Styles */
+  .fusion-tickets-page {
+    max-width: 800px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    border: 1px solid var(--border-color);
+  }
+
+  .fusion-tickets-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+
+  .fusion-page-title {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--text-color);
+  }
+
+  .fusion-create-btn {
+    padding: 0.8rem 1.5rem;
+    background-color: var(--primary-color);
+    color: white;
+  }
+
+  .fusion-create-btn:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+  }
+
+  .fusion-creating {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .fusion-spinner {
+    width: 1rem;
+    height: 1rem;
+    border: 2px solid rgba(255,255,255,0.3);
+    border-radius: 50%;
+    border-top-color: white;
+    animation: fusion-spin 1s ease-in-out infinite;
+  }
+
+  .fusion-error-message {
+    background: #fef2f2;
+    color: #dc2626;
+    padding: 1rem;
+    border-radius: 8px;
+    margin-bottom: 1.5rem;
+    border: 1px solid #fca5a5;
+  }
+
+  .fusion-empty-message {
+    color: #59667d;
+    font-style: italic;
+    text-align: center;
+    padding: 2rem;
+  }
+
+  .fusion-tickets-list {
+    list-style: none;
+    padding: 0;
+    display: grid;
+    gap: 1rem;
+  }
+
+  .fusion-ticket-card {
+    background: var(--light-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 1.5rem;
+    transition: transform 0.3s, box-shadow 0.3s;
+  }
+
+  .fusion-ticket-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  }
+
+  .fusion-ticket-card p {
+    margin: 0.5rem 0;
+    color: var(--text-color);
+  }
+
+  .fusion-ticket-card strong {
+    color: var(--text-color);
+  }
+
+  .fusion-status {
+    display: inline-block;
+    padding: 0.3rem 0.8rem;
+    border-radius: 4px;
+    font-weight: 500;
+  }
+
+  .fusion-status-en_attente {
+    background-color: #fffbeb;
+    color: #d97706;
+  }
+
+  .fusion-status-en_cours {
+    background-color: #e0f2fe;
+    color: #0369a1;
+  }
+
+  .fusion-status-terminé {
+    background-color: #dcfce7;
+    color: #166534;
+  }
+
+  @keyframes fusion-spin {
+    to { transform: rotate(360deg); }
+  }
+
+  @media (max-width: 768px) {
+    .fusion-tickets-page {
+      padding: 1.5rem;
+    }
+
+    .fusion-tickets-header {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    .fusion-create-btn {
+      width: 100%;
+    }
   }
 }

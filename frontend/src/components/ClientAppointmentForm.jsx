@@ -24,30 +24,38 @@ const ClientAppointmentForm = () => {
     };
 
     return (
-        <div className="max-w-md mx-auto p-4">
-            <h2 className="text-xl font-semibold mb-4">Prendre un rendez-vous</h2>
-            <form onSubmit={handleSubmit} className="space-y-4">
-                <input
-                    type="date"
-                    name="date"
-                    value={form.date}
-                    onChange={handleChange}
-                    required
-                    className="w-full p-2 border rounded"
-                />
-                <input
-                    type="time"
-                    name="heure"
-                    value={form.heure}
-                    onChange={handleChange}
-                    required
-                    className="w-full p-2 border rounded"
-                />
-                <button type="submit" className="bg-blue-600 text-white px-4 py-2 rounded">
+        <div className="fusion-appointment-form">
+            <h2 className="fusion-form-title">Prendre un rendez-vous</h2>
+            <form onSubmit={handleSubmit} className="fusion-form">
+                <div className="fusion-form-group">
+                    <input
+                        type="date"
+                        name="date"
+                        value={form.date}
+                        onChange={handleChange}
+                        required
+                        className="fusion-form-input"
+                    />
+                </div>
+                <div className="fusion-form-group">
+                    <input
+                        type="time"
+                        name="heure"
+                        value={form.heure}
+                        onChange={handleChange}
+                        required
+                        className="fusion-form-input"
+                    />
+                </div>
+                <button type="submit" className="fusion-button fusion-submit-btn">
                     Réserver
                 </button>
             </form>
-            {message && <p className="mt-4 text-green-600">{message}</p>}
+            {message && (
+                <p className={`fusion-message ${message.includes("succès") ? "fusion-success" : "fusion-error"}`}>
+                    {message}
+                </p>
+            )}
         </div>
     );
 };

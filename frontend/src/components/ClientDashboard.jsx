@@ -38,23 +38,23 @@ export default function ClientDashboard() {
                 {loading ? (
                     <Spinner />
                 ) : (
-                    <div className="max-w-5xl mx-auto p-6 bg-white rounded shadow">
-                        <h1 className="text-2xl font-bold mb-4 text-green-700">Bienvenue sur votre espace client</h1>
+                    <div className="fusion-client-dashboard">
+                        <h1 className="fusion-dashboard-title">Bienvenue sur votre espace client</h1>
 
-                        {error && <p className="text-red-600 mb-4">{error}</p>}
+                        {error && <p className="fusion-error-message">{error}</p>}
 
                         {/* Tickets */}
-                        <div className="mb-6">
-                            <h2 className="text-xl font-semibold mb-2">Vos Tickets</h2>
+                        <div className="fusion-section">
+                            <h2 className="fusion-section-title">Vos Tickets</h2>
                             {tickets.length === 0 ? (
-                                <p className="text-gray-600">Aucun ticket actuellement.</p>
+                                <p className="fusion-empty-message">Aucun ticket actuellement.</p>
                             ) : (
-                                <ul className="space-y-3">
+                                <ul className="fusion-list">
                                     {tickets.map(ticket => (
-                                        <li key={ticket.id} className="p-4 border rounded bg-gray-50">
+                                        <li key={ticket.id} className="fusion-card">
                                             <p><strong>Numéro :</strong> {ticket.number}</p>
                                             <p><strong>Service :</strong> {ticket.serviceName}</p>
-                                            <p><strong>Statut :</strong> <span className="text-yellow-600 font-semibold">{ticket.status}</span></p>
+                                            <p><strong>Statut :</strong> <span className="fusion-status fusion-status-pending">{ticket.status}</span></p>
                                         </li>
                                     ))}
                                 </ul>
@@ -62,18 +62,18 @@ export default function ClientDashboard() {
                         </div>
 
                         {/* Rendez-vous */}
-                        <div className="mb-6">
-                            <h2 className="text-xl font-semibold mb-2">Vos Rendez-vous</h2>
+                        <div className="fusion-section">
+                            <h2 className="fusion-section-title">Vos Rendez-vous</h2>
                             {rendezVous.length === 0 ? (
-                                <p className="text-gray-600">Aucun rendez-vous programmé.</p>
+                                <p className="fusion-empty-message">Aucun rendez-vous programmé.</p>
                             ) : (
-                                <ul className="space-y-3">
+                                <ul className="fusion-list">
                                     {rendezVous.map(rdv => (
-                                        <li key={rdv.id} className="p-4 border rounded bg-gray-50">
+                                        <li key={rdv.id} className="fusion-card">
                                             <p><strong>Date :</strong> {new Date(rdv.date).toLocaleDateString()}</p>
                                             <p><strong>Heure :</strong> {rdv.heure}</p>
                                             <p><strong>Service :</strong> {rdv.serviceName}</p>
-                                            <p><strong>Statut :</strong> <span className="text-blue-700 font-semibold">{rdv.status}</span></p>
+                                            <p><strong>Statut :</strong> <span className="fusion-status fusion-status-confirmed">{rdv.status}</span></p>
                                         </li>
                                     ))}
                                 </ul>
@@ -81,10 +81,10 @@ export default function ClientDashboard() {
                         </div>
 
                         {/* Bouton de prise de rendez-vous */}
-                        <div className="text-center">
+                        <div className="fusion-action-container">
                             <button
                                 onClick={() => navigate('/client/rendezvous')}
-                                className="px-6 py-3 bg-green-600 text-white rounded hover:bg-green-700"
+                                className="fusion-button fusion-primary-btn"
                             >
                                 Prendre un rendez-vous
                             </button>

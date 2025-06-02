@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
+import Spinner from "../components/Spinner"; // Supposons que vous avez un composant Spinner
 
 const OperatorTickets = () => {
     const [tickets, setTickets] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
 
     useEffect(() => {
         const fetchTickets = async () => {
@@ -13,31 +15,49 @@ const OperatorTickets = () => {
                     headers: { Authorization: `Bearer ${token}` },
                 });
                 setTickets(response.data);
+                setError(null);
             } catch (error) {
                 console.error("Erreur de récupération des tickets", error);
+                setError("Impossible de charger les tickets");
             } finally {
                 setLoading(false);
             }
         };
 
         fetchTickets();
-        const interval = setInterval(fetchTickets, 5000); // toutes les 5s
+        const interval = setInterval(fetchTickets, 5000);
 
         return () => clearInterval(interval);
     }, []);
 
-    if (loading) return <div>Chargement des tickets...</div>;
+    if (loading) return <Spinner />;
 
     return (
-        <div className="p-4">
-            <h2 className="text-xl font-bold mb-4">Tickets en cours</h2>
-            <ul className="space-y-2">
-                {tickets.map((ticket) => (
-                    <li key={ticket.id} className="bg-gray-100 p-3 rounded shadow">
-                        <strong>Numéro :</strong> {ticket.numero} — <strong>Statut :</strong> {ticket.statut}
-                    </li>
-                ))}
-            </ul>
+        <div className="fusion-tickets-container">
+            <h2 className="fusion-section-title">Tickets en cours</h2>
+
+            {error && (
+                <div className="fusion-error-message">
+                    {error}
+                </div>
+            )}
+
+            {tickets.length === 0 ? (
+                <p className="fusion-empty-message">Aucun ticket en cours</p>
+            ) : (
+                <ul className="fusion-tickets-list">
+                    {tickets.map((ticket) => (
+                        <li key={ticket.id} className="fusion-ticket-item">
+                            <div className="fusion-ticket-content">
+                                <span className="fusion-ticket-number">#{ticket.numero}</span>
+                                <span className={`fusion-ticket-status fusion-status-${ticket.statut.toLowerCase()}`}>
+                                    {ticket.statut}
+                                </span>
+                            </div>
+                        </li>
+                    ))}
+                </ul>
+            )}
         </div>
     );
 };

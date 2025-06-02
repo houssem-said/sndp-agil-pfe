@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
+import Spinner from "../components/Spinner"; // Supposons que vous avez un composant Spinner
 
 const OperatorAppointments = () => {
     const [appointments, setAppointments] = useState([]);
@@ -14,7 +15,6 @@ const OperatorAppointments = () => {
                     headers: { Authorization: `Bearer ${token}` },
                 });
                 setAppointments(response.data);
-                // eslint-disable-next-line no-unused-vars
             } catch (err) {
                 setError("Erreur lors du chargement des rendez-vous.");
             } finally {
@@ -25,32 +25,39 @@ const OperatorAppointments = () => {
         fetchAppointments();
     }, []);
 
-    if (loading) return <div className="text-center mt-10">Chargement...</div>;
-    if (error) return <div className="text-red-500 mt-10">{error}</div>;
+    if (loading) return <Spinner />;
+    if (error) return <div className="fusion-error-message">{error}</div>;
 
     return (
-        <div className="p-4">
-            <h2 className="text-xl font-semibold mb-4">Liste des rendez-vous</h2>
-            <table className="min-w-full bg-white rounded shadow">
-                <thead>
-                <tr>
-                    <th className="px-4 py-2">Client</th>
-                    <th className="px-4 py-2">Date</th>
-                    <th className="px-4 py-2">Heure</th>
-                    <th className="px-4 py-2">Statut</th>
-                </tr>
-                </thead>
-                <tbody>
-                {appointments.map((rdv) => (
-                    <tr key={rdv.id}>
-                        <td className="border px-4 py-2">{rdv.client.nom}</td>
-                        <td className="border px-4 py-2">{rdv.date}</td>
-                        <td className="border px-4 py-2">{rdv.heure}</td>
-                        <td className="border px-4 py-2">{rdv.statut}</td>
+        <div className="fusion-appointments-container">
+            <h2 className="fusion-section-title">Liste des rendez-vous</h2>
+
+            <div className="fusion-table-container">
+                <table className="fusion-appointments-table">
+                    <thead>
+                    <tr>
+                        <th>Client</th>
+                        <th>Date</th>
+                        <th>Heure</th>
+                        <th>Statut</th>
                     </tr>
-                ))}
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                    {appointments.map((rdv) => (
+                        <tr key={rdv.id}>
+                            <td>{rdv.client.nom}</td>
+                            <td>{new Date(rdv.date).toLocaleDateString()}</td>
+                            <td>{rdv.heure}</td>
+                            <td>
+                                    <span className={`fusion-status fusion-status-${rdv.statut.toLowerCase()}`}>
+                                        {rdv.statut}
+                                    </span>
+                            </td>
+                        </tr>
+                    ))}
+                    </tbody>
+                </table>
+            </div>
         </div>
     );
 };
