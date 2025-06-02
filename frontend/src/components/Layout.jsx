@@ -1,9 +1,15 @@
 import { Outlet } from "react-router-dom";
-import { FaArrowUp } from "react-icons/fa";
+import { FaArrowUp, FaMoon, FaSun } from "react-icons/fa";
 import { useState, useEffect } from "react";
 
 export default function Layout() {
     const [showScrollTop, setShowScrollTop] = useState(false);
+    const [darkMode, setDarkMode] = useState(() => {
+        // Vérifie le localStorage et la préférence système
+        const savedTheme = localStorage.getItem('theme');
+        const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        return savedTheme ? savedTheme === 'dark' : systemPrefersDark;
+    });
 
     useEffect(() => {
         const handleScroll = () => setShowScrollTop(window.scrollY > 300);
@@ -57,16 +63,14 @@ export default function Layout() {
                                 <p>33 Rue de l'Industrie</p>
                                 <p>Tunis, Tunisie</p>
                                 <p>contact@sndp-agil.tn</p>
-                                <p>+216 71 234 567</p>
+                                <p>+216 71 707 222</p>
                             </address>
                         </div>
 
                         <div className="fusion-widget-column">
                             <h4>Réseaux sociaux</h4>
                             <div className="fusion-social-links">
-                                <a href="#"><i className="fab fa-linkedin"></i></a>
-                                <a href="#"><i className="fab fa-facebook"></i></a>
-                                <a href="#"><i className="fab fa-twitter"></i></a>
+                                <a href="https://www.facebook.com/agil.com.tn/"><i className="fab fa-facebook"></i></a>
                             </div>
                             <a href="/contact" className="fusion-button button-flat">
                                 Nous contacter

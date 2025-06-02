@@ -6,7 +6,7 @@ import java.util.List;
 
 @Data
 @Entity
-public class Service {
+public class ServiceEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

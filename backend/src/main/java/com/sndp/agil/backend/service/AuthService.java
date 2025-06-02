@@ -1,88 +1,120 @@
 package com.sndp.agil.backend.service;
 
-import com.sndp.agil.backend.dto.AuthResponse;
 import com.sndp.agil.backend.dto.LoginRequest;
 import com.sndp.agil.backend.model.RoleUtilisateur;
-import com.sndp.agil.backend.model.Utilisateur;
-import com.sndp.agil.backend.repository.UtilisateurRepository;
+import com.sndp.agil.backend.model.User;
+import com.sndp.agil.backend.repository.UserRepository;
 import com.sndp.agil.backend.security.JwtUtils;
-import com.sndp.agil.backend.security.UserDetailsImpl;
-import com.sndp.agil.backend.service.EmailService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
 public class AuthService {
 
-    private final UtilisateurRepository utilisateurRepository;
+    private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtUtils jwtUtils;
     private final EmailService emailService;
 
-    public AuthService(UtilisateurRepository utilisateurRepository,
+    public AuthService(UserRepository userRepository,
                        PasswordEncoder passwordEncoder,
                        JwtUtils jwtUtils,
                        EmailService emailService) {
-        this.utilisateurRepository = utilisateurRepository;
+        this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtUtils = jwtUtils;
         this.emailService = emailService;
     }
 
-    // Inscription d'un utilisateur
-    public Utilisateur registerUser(String username, String password, String email, String role) {
-        // Validation de l'email (regex simple)
+    /**
+     * Inscription d’un nouvel utilisateur.
+     * Vérifie les contraintes (email, mot de passe, rôle), sauvegarde l’utilisateur
+     * puis envoie un e-mail de confirmation contenant le token JWT.
+     */
+    public User registerUser(String username, String password, String email, String role) {
+        // Validation de l’email via regex simple
         if (!email.matches("^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$")) {
             throw new IllegalArgumentException("Email invalide");
         }
 
-        // Validation de la longueur du mot de passe
+        // Vérification de la longueur minimale du mot de passe
         if (password.length() < 8) {
             throw new IllegalArgumentException("Le mot de passe doit contenir au moins 8 caractères");
         }
 
-        // Vérifier si l'email est déjà utilisé
-        if (utilisateurRepository.existsByEmail(email)) {
+        // Vérifier si l’email existe déjà
+        if (userRepository.existsByEmail(email)) {
             throw new IllegalArgumentException("Email déjà utilisé");
         }
 
-        // Création de l'utilisateur avec mot de passe encodé
+        // Converter role du frontend (STRING) en RoleUtilisateur
         RoleUtilisateur userRole;
         try {
             userRole = RoleUtilisateur.valueOf(role.toUpperCase());
         } catch (IllegalArgumentException e) {
-            throw new IllegalArgumentException("Rôle utilisateur invalide");
+            throw new IllegalArgumentException("Rôle user invalide");
         }
 
-        Utilisateur utilisateur = new Utilisateur(username, passwordEncoder.encode(password), email, userRole);
-        utilisateur = utilisateurRepository.save(utilisateur);
+        // Création de l’user (non actif par défaut, activation après mail)
+        User user = new User(username, passwordEncoder.encode(password), email, userRole);
+        user.setActive(false);
+        user = userRepository.save(user);
 
-        // Générer un token de confirmation (JWT)
-        String token = jwtUtils.generateToken(new UserDetailsImpl(utilisateur));
-
-        // Envoyer un e-mail de confirmation
-        emailService.sendConfirmationEmail(email, token);
-
-        return utilisateur;
+        return user;
     }
 
-    // Authentification d'un utilisateur
-    public AuthResponse authenticate(LoginRequest request) {
-        Utilisateur user = utilisateurRepository.findByEmail(request.getEmail())
-                .orElseThrow(() -> new RuntimeException("Utilisateur non trouvé"));
+    /**
+     * Vérification du token de confirmation (JWT).
+     */
+    public boolean validateConfirmationToken(String token) {
+        try {
+            return jwtUtils.validateToken(token);
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    /**
+     * Activation de l’utilisateur après confirmation.
+     * On extrait l’email du token, on met à jour le champ 'active' à true.
+     */
+    public void activateUser(String token) {
+        String email = jwtUtils.extractUsername(token);
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User non trouvé"));
+        user.setActive(true);
+        userRepository.save(user);
+    }
+
+    /**
+     * Envoi d’un e-mail de confirmation contenant le lien d’activation.
+     * (La génération du token se fait dans AuthController après save).
+     */
+    public void sendConfirmationEmail(String email, String token) {
+        emailService.sendConfirmationEmail(email, token);
+    }
+
+    /**
+     * Authentification standard (email + mot de passe).
+     * Utilisé par AuthController pour login.
+     * Retourne un AuthResponse dans AuthController, donc ici on ne gère que la logique métier.
+     */
+    public User authenticate(LoginRequest request) {
+        User user = userRepository.findByEmail(request.getEmail())
+                .orElseThrow(() -> new RuntimeException("User non trouvé"));
 
         if (!passwordEncoder.matches(request.getPassword(), user.getMotDePasse())) {
             throw new RuntimeException("Mot de passe incorrect");
         }
-
-        String token = jwtUtils.generateToken(new UserDetailsImpl(user));
-        return new AuthResponse(token, "Bearer", user.getRole().name());
+        return user;
     }
 
-    // Authentification d'un administrateur
-    public Utilisateur authenticateAdmin(LoginRequest request) {
-        Utilisateur user = utilisateurRepository.findByEmail(request.getEmail())
-                .orElseThrow(() -> new RuntimeException("Utilisateur non trouvé"));
+    /**
+     * Authentification réservée à un administrateur.
+     */
+    public User authenticateAdmin(LoginRequest request) {
+        User user = userRepository.findByEmail(request.getEmail())
+                .orElseThrow(() -> new RuntimeException("User non trouvé"));
         if (!user.getRole().equals(RoleUtilisateur.ADMIN)) {
             throw new RuntimeException("Accès réservé aux administrateurs !");
         }
@@ -92,10 +124,12 @@ public class AuthService {
         return user;
     }
 
-    // Authentification d'un agent
-    public Utilisateur authenticateAgent(LoginRequest request) {
-        Utilisateur user = utilisateurRepository.findByEmail(request.getEmail())
-                .orElseThrow(() -> new RuntimeException("Utilisateur non trouvé"));
+    /**
+     * Authentification réservée à un agent.
+     */
+    public User authenticateAgent(LoginRequest request) {
+        User user = userRepository.findByEmail(request.getEmail())
+                .orElseThrow(() -> new RuntimeException("User non trouvé"));
         if (!user.getRole().equals(RoleUtilisateur.AGENT)) {
             throw new RuntimeException("Accès réservé aux agents !");
         }
@@ -104,28 +138,4 @@ public class AuthService {
         }
         return user;
     }
-
-    // Validation du token de confirmation
-    public boolean validateConfirmationToken(String token) {
-        try {
-            return jwtUtils.validateToken(token);
-        } catch (Exception e) {
-            return false;
-        }
-    }
-
-    // Activation de l'utilisateur après confirmation
-    public void activateUser(String token) {
-        String email = jwtUtils.getUsernameFromToken(token);
-        Utilisateur user = utilisateurRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("Utilisateur non trouvé"));
-
-        user.setActive(true);
-        utilisateurRepository.save(user);
-    }
-
-    public Utilisateur findByEmail(String email) {
-        return utilisateurRepository.findByEmail(email).orElse(null);
-    }
-
 }

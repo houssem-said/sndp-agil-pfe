@@ -11,7 +11,7 @@ const OperatorTickets = () => {
         const fetchTickets = async () => {
             try {
                 const token = localStorage.getItem("token");
-                const response = await axios.get("http://localhost:8080/api/tickets/agency", {
+                const response = await axios.get("/tickets/agency", {
                     headers: { Authorization: `Bearer ${token}` },
                 });
                 setTickets(response.data);

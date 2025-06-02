@@ -1,6 +1,6 @@
 package com.sndp.agil.backend.security;
 
-import com.sndp.agil.backend.model.Utilisateur;
+import com.sndp.agil.backend.model.User;
 import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -11,25 +11,25 @@ import java.util.List;
 
 @Getter
 public class UserDetailsImpl implements UserDetails {
-    private final Utilisateur utilisateur;
+    private final User user;
 
-    public UserDetailsImpl(Utilisateur utilisateur) {
-        this.utilisateur = utilisateur;
+    public UserDetailsImpl(User user) {
+        this.user = user;
     }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority("ROLE_" + utilisateur.getRole().name()));
+        return List.of(new SimpleGrantedAuthority("ROLE_" + user.getRole().name()));
     }
 
     @Override
     public String getPassword() {
-        return utilisateur.getMotDePasse();
+        return user.getMotDePasse();
     }
 
     @Override
     public String getUsername() {
-        return utilisateur.getEmail();
+        return user.getEmail();
     }
 
     @Override
@@ -49,7 +49,7 @@ public class UserDetailsImpl implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return utilisateur.isActive();
+        return user.isActive();
     }
 
 }

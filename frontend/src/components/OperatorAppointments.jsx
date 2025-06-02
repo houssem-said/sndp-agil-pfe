@@ -11,10 +11,11 @@ const OperatorAppointments = () => {
         const fetchAppointments = async () => {
             try {
                 const token = localStorage.getItem("token");
-                const response = await axios.get("http://localhost:8080/api/rendezvous/agency", {
+                const response = await axios.get("/api/rendezvous/agency", {
                     headers: { Authorization: `Bearer ${token}` },
                 });
                 setAppointments(response.data);
+                // eslint-disable-next-line no-unused-vars
             } catch (err) {
                 setError("Erreur lors du chargement des rendez-vous.");
             } finally {

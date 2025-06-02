@@ -13,7 +13,7 @@ const ClientAppointmentForm = () => {
         e.preventDefault();
         try {
             const token = localStorage.getItem("token");
-            await axios.post("http://localhost:8080/api/rendezvous/create", form, {
+            await axios.post("/rendezvous/create", form, {
                 headers: { Authorization: `Bearer ${token}` },
             });
             setMessage("Rendez-vous enregistré avec succès !");

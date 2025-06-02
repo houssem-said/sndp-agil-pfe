@@ -36,7 +36,7 @@ public class Ticket {
     @JsonBackReference
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "utilisateur_id", nullable = false)
-    private Utilisateur utilisateur;
+    private User user;
 
     @PrePersist
     public void generateNumero() {

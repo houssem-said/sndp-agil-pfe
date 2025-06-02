@@ -16,6 +16,7 @@ export default function OperatorDashboard() {
             const res = await api.get('/operator/tickets');
             setTickets(res.data);
             setError('');
+            // eslint-disable-next-line no-unused-vars
         } catch (err) {
             setError('Erreur lors du chargement des tickets');
         } finally {
@@ -29,6 +30,7 @@ export default function OperatorDashboard() {
             await api.post('/operator/tickets/call-next');
             await fetchTickets();
             setError('');
+            // eslint-disable-next-line no-unused-vars
         } catch (err) {
             setError('Erreur lors de l\'appel du ticket suivant');
         } finally {

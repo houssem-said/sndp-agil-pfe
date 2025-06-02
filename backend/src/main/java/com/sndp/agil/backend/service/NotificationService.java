@@ -59,8 +59,8 @@ public class NotificationService {
 
     // Notification pour un rendez-vous
     public void notifyRendezVous(RendezVous rdv, String action) {
-        String clientName = (rdv.getUtilisateur() != null)
-                ? rdv.getUtilisateur().getNom() // Utilisation de getNom() au lieu de getNomComplet()
+        String clientName = (rdv.getUser() != null)
+                ? rdv.getUser().getNom() // Utilisation de getNom() au lieu de getNomComplet()
                 : "Client";
 
         NotificationDTO notification = new NotificationDTO(
