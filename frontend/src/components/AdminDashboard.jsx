@@ -17,16 +17,16 @@ const AdminDashboard = () => {
     }, []);
 
     return (
-        <div className="p-6">
-            <h1 className="text-2xl font-bold mb-4">Tableau de bord Admin</h1>
-            <div className="grid grid-cols-2 gap-4">
-                <div className="bg-blue-100 p-4 rounded shadow">
-                    <h2 className="text-lg">Tickets générés</h2>
-                    <p className="text-xl font-bold">{stats.totalTickets}</p>
+        <div className="fusion-admin-dashboard">
+            <h1 className="fusion-admin-title">Tableau de bord Admin</h1>
+            <div className="fusion-stats-grid">
+                <div className="fusion-stat-card fusion-stat-tickets">
+                    <h2 className="fusion-stat-title">Tickets générés</h2>
+                    <p className="fusion-stat-value">{stats.totalTickets}</p>
                 </div>
-                <div className="bg-green-100 p-4 rounded shadow">
-                    <h2 className="text-lg">Rendez-vous enregistrés</h2>
-                    <p className="text-xl font-bold">{stats.totalRendezVous}</p>
+                <div className="fusion-stat-card fusion-stat-rendezvous">
+                    <h2 className="fusion-stat-title">Rendez-vous enregistrés</h2>
+                    <p className="fusion-stat-value">{stats.totalRendezVous}</p>
                 </div>
             </div>
         </div>
